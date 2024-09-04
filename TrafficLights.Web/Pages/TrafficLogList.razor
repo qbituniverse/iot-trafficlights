@@ -1,0 +1,147 @@
+﻿@page "/traffic-log-list"
+@using TrafficLights.Web.Services
+@using TrafficLights.Domain.Models.TrafficLog
+@using System.Globalization
+
+<PageTitle>Traffic Log List</PageTitle>
+
+@inject NavigationManager Navigation
+@inject IJSRuntime JsRuntime
+@inject ITrafficLogService TrafficLogService
+
+<h3>Traffic Log List</h3>
+
+@if (_trafficLogData == null || IsTaskRunning)
+{
+    <div class="spinner"></div>
+}
+else if (!_trafficLogData.Any())
+{
+    <p><em>No Traffic Logs found</em></p>
+}
+else
+{
+    <div class="my-3">
+        <button class="btn btn-danger w-100" disabled="@IsTaskRunning" @onclick="() => DeleteDays(0)">Delete Today's</button>
+    </div>
+    <div class="my-3">
+        <button class="btn btn-danger w-100" disabled="@IsTaskRunning" @onclick="() => DeleteDays(1)">Delete Day-1</button>
+    </div>
+    <div class="my-3">
+        <button class="btn btn-danger w-100" disabled="@IsTaskRunning" @onclick="() => DeleteDays(2)">Delete Day-2</button>
+    </div>
+    <div class="my-3">
+        <button class="btn btn-danger w-100" disabled="@IsTaskRunning" @onclick="() => DeleteDays(3)">Delete Day-3</button>
+    </div>
+    <div class="my-3">
+        <button class="btn btn-danger w-100" disabled="@IsTaskRunning" @onclick="() => DeleteDays(4)">Delete Day-4</button>
+    </div>
+    <div class="my-3">
+        <button class="btn btn-danger w-100" disabled="@IsTaskRunning" @onclick="() => DeleteDays(5)">Delete Day-5</button>
+    </div>
+    <div class="my-3">
+        <button class="btn btn-danger w-100" disabled="@IsTaskRunning" @onclick="DeleteClick">Delete All</button>
+    </div>
+    <div class="my-3">
+        <input class="form-control" type="text" placeholder="Filter..."
+               @bind="Filter"
+               @bind:event="oninput">
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Mode</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var trafficLog in _trafficLogData)
+        {
+            if (!IsVisible(trafficLog))
+                continue;
+            <tr>
+                <td><a href="/traffic-log-details/@trafficLog.Id">@trafficLog.Id</a></td>
+                <td>@trafficLog.Mode</td>
+                <td>@trafficLog.TimeStamp.ToModelFormat()</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    public string? Filter { get; set; }
+
+    public bool IsTaskRunning;
+
+    private IList<TrafficLog>? _trafficLogData;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var trafficData = await TrafficLogService.GetAllTrafficLogs();
+        _trafficLogData = trafficData.OrderByDescending(d => d.TimeStamp).ToList();
+    }
+
+    public bool IsVisible(TrafficLog trafficLog)
+    {
+        if (string.IsNullOrEmpty(Filter))
+            return true;
+
+        if (trafficLog.Id!.Contains(Filter, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (trafficLog.Mode.Contains(Filter, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (trafficLog.TimeStamp.ToString(CultureInfo.CurrentCulture).StartsWith(Filter))
+            return true;
+
+        return false;
+    }
+
+    protected async void DeleteClick(EventArgs args)
+    {
+        if (!await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete all the records?")) return;
+
+        IsTaskRunning = true;
+        StateHasChanged();
+
+        if (await TrafficLogService.DeleteAllTrafficLogs())
+        {
+
+            await JsRuntime.InvokeVoidAsync("alert", "Traffic Logs Deleted");
+            Navigation.NavigateTo("traffic-log-list", true);
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Traffic Logs Delete Failed");
+        }
+
+        IsTaskRunning = false;
+        StateHasChanged();
+    }
+
+    protected async void DeleteDays(int days)
+    {
+        if (!await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete the records?")) return;
+
+        IsTaskRunning = true;
+        StateHasChanged();
+
+        if (await TrafficLogService.DeleteDocumentsByDate(DateTime.Now.AddDays(-days).ToString("yyyy-MM-dd")))
+        {
+
+            await JsRuntime.InvokeVoidAsync("alert", "Traffic Logs Deleted");
+            Navigation.NavigateTo("traffic-log-list", true);
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Traffic Logs Delete Failed");
+        }
+
+        IsTaskRunning = false;
+        StateHasChanged();
+    }
+
+}

@@ -1,0 +1,81 @@
+services:
+  db:
+    image: mysql:latest
+    restart: on-failure
+    container_name: iot-trafficlights-mysql
+    environment:
+      - TZ=Europe/Warsaw
+      - MYSQL_ROOT_PASSWORD=${DB_PWD}
+      - MYSQL_DATABASE=TrafficLights
+    volumes:
+      - ${DB_DIR}:/var/lib/mysql
+    ports:
+      - 3307:3306
+    tty: true
+    networks:
+      - iot-trafficlights
+
+  api:
+    image: qbituniverse/iot-trafficlights-api:latest
+    depends_on:
+      - db
+    restart: on-failure
+    container_name: iot-trafficlights-api
+    environment:
+      - TZ=Europe/Warsaw
+      - ApiConfiguration__Environment=Test
+      - ApiConfiguration__Repository__Type=MySql
+      - ApiConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=TrafficLights
+      - ApiConfiguration__Modules__TrafficControl__Type=Pi
+    ports:
+      - 8011:8080
+    tty: true
+    privileged: true
+    networks:
+      - iot-trafficlights
+
+  web:
+    image: qbituniverse/iot-trafficlights-web:latest
+    depends_on:
+      - db
+    restart: on-failure
+    container_name: iot-trafficlights-web
+    environment:
+      - TZ=Europe/Warsaw
+      - WebConfiguration__Environment=Test
+      - WebConfiguration__Repository__Type=MySql
+      - WebConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=TrafficLights
+      - WebConfiguration__Modules__TrafficControl__Type=Pi
+      - WebConfiguration__Modules__TrafficControl__Api__Url=http://iot-trafficlights-api
+      - WebConfiguration__TrafficLog__Type=Repository
+      - WebConfiguration__TrafficLog__Api__Url=http://iot-trafficlights-api
+    ports:
+      - 8021:8080
+    tty: true
+    privileged: true
+    networks:
+      - iot-trafficlights
+
+  console:
+    image: qbituniverse/iot-trafficlights-console:latest
+    depends_on:
+      - db
+    restart: on-failure
+    container_name: iot-trafficlights-console
+    environment:
+      - TZ=Europe/Warsaw
+      - ConsoleConfiguration__Environment=Test
+      - ConsoleConfiguration__Repository__Type=MySql
+      - ConsoleConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=TrafficLights
+      - ConsoleConfiguration__Modules__TrafficControl__Type=Pi
+      - ConsoleConfiguration__Modules__TrafficControl__Api__Url=http://iot-trafficlights-api
+      - ConsoleConfiguration__Modules__TrafficSensor__Type=Pi
+      - ConsoleConfiguration__Run=RunTrafficTimer
+    tty: true
+    privileged: true
+    networks:
+      - iot-trafficlights
+
+networks:
+  iot-trafficlights:
+    driver: bridge
