@@ -1,0 +1,118 @@
+﻿@page "/traffic-log-details/{Id}"
+@using TrafficLights.Web.Services
+@using Microsoft.AspNetCore.Components
+@using TrafficLights.Domain.Models.TrafficLog
+
+<PageTitle>Traffic Log Details</PageTitle>
+
+@inject NavigationManager Navigation
+@inject IJSRuntime JsRuntime
+@inject ITrafficLogService TrafficLogService
+
+<h3>Traffic Log Details</h3>
+
+@if (_trafficLogData == null || IsTaskRunning)
+{
+    <div class="spinner"></div>
+}
+else
+{
+    <div class="my-3">
+        <button class="btn btn-primary w-100" disabled="@IsTaskRunning" @onclick="BackClick">Back</button>
+    </div>
+    <div class="my-3">
+        <button class="btn btn-warning w-100" disabled="@IsTaskRunning" @onclick="UpdateClick">Update</button>
+    </div>
+    <div class="my-3">
+        <button class="btn btn-danger w-100" disabled="@IsTaskRunning" @onclick="DeleteClick">Delete</button>
+    </div>
+    <EditForm Model=@_trafficLogData OnValidSubmit="UpdateClick">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Property</th>
+                <th>Value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Id</td>
+                <td>@_trafficLogData.Id</td>
+            </tr>
+            <tr>
+                <td>Mode</td>
+                <InputSelect @bind-Value=_trafficLogData.Mode class="form-control" id="Mode">
+                    @foreach (var mode in Enum.GetValues(typeof(TrafficLog.TrafficMode)))
+                    {
+                        <option value="@mode">@mode</option>
+                    }
+                </InputSelect>
+            </tr>
+            <tr>
+                <td>TimeStamp</td>
+                <td>@_trafficLogData.TimeStamp.ToModelFormat()</td>
+            </tr>
+            </tbody>
+        </table>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string? Id{ get; set; }
+
+    public bool IsTaskRunning;
+
+    private TrafficLog? _trafficLogData;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _trafficLogData = await TrafficLogService.GetTrafficLogById(Id!);
+    }
+
+    protected void BackClick(EventArgs args)
+    {
+        Navigation.NavigateTo("traffic-log-list");
+    }
+
+    protected async void DeleteClick(EventArgs args)
+    {
+        if (!await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete this record?")) return;
+
+        IsTaskRunning = true;
+        StateHasChanged();
+
+        if (await TrafficLogService.DeleteTrafficLogById(Id!))
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Traffic Log Deleted");
+            Navigation.NavigateTo("traffic-log-list");
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Traffic Log Delete Failed");
+        }
+
+        IsTaskRunning = false;
+        StateHasChanged();
+    }
+
+    protected async Task UpdateClick()
+    {
+        if (!await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to update this record?")) return;
+
+        IsTaskRunning = true;
+        StateHasChanged();
+
+        if (await TrafficLogService.UpdateDocument(_trafficLogData!))
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Traffic Log Updated");
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Traffic Log Update Failed");
+        }
+
+        IsTaskRunning = false;
+        StateHasChanged();
+    }
+}

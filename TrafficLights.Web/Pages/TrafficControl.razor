@@ -1,0 +1,172 @@
+﻿@page "/traffic-control"
+@using TrafficLights.Web.Services
+@using TrafficLights.Domain.Models.TrafficLog
+
+<PageTitle>Traffic Control</PageTitle>
+
+@inject IJSRuntime JsRuntime
+@inject ITrafficControlService TrafficControlService
+@inject ITrafficLogService TrafficLogService
+
+<h3>Traffic Control</h3>
+
+@if (IsTaskRunning)
+{
+    <div class="spinner"></div>
+}
+else
+{
+    <div class="my-3">
+        <button class="btn btn-primary w-100" disabled="@IsTaskRunning" @onclick="TrafficStartClick">Traffic Start</button>
+    </div>
+    <div class="my-3">
+        <button class="btn btn-primary w-100" disabled="@IsTaskRunning" @onclick="TrafficStopClick">Traffic Stop</button>
+    </div>
+    <div class="my-3">
+        <button class="btn btn-primary w-100" disabled="@IsTaskRunning" @onclick="TrafficStandbyClick">Traffic Standby</button>
+    </div>
+    <div class="my-3">
+        <button class="btn btn-primary w-100" disabled="@IsTaskRunning" @onclick="TrafficShutClick">Traffic Shut</button>
+    </div>
+    <div class="my-3">
+        <button class="btn btn-primary w-100" disabled="@IsTaskRunning" @onclick="TrafficTestClick">Traffic Test</button>
+    </div>
+    <div class="my-3">
+        <button class="btn btn-warning w-100" disabled="@IsTaskRunning" @onclick="TrafficManualClick">Manual Create</button>
+    </div>
+}
+
+@code {
+    public bool IsTaskRunning;
+
+    protected async void TrafficStartClick(EventArgs args)
+    {
+        IsTaskRunning = true;
+        StateHasChanged();
+
+        if (await TrafficControlService.Start())
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Traffic Start Completed");
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Traffic Start Failed");
+        }
+
+        IsTaskRunning = false;
+        StateHasChanged();
+    }
+
+    protected async void TrafficStopClick(EventArgs args)
+    {
+        IsTaskRunning = true;
+        StateHasChanged();
+
+        if (await TrafficControlService.Stop())
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Traffic Stop Completed");
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Traffic Stop Failed");
+        }
+
+        IsTaskRunning = false;
+        StateHasChanged();
+    }
+
+    protected async void TrafficStandbyClick(EventArgs args)
+    {
+        IsTaskRunning = true;
+        StateHasChanged();
+
+        if (await TrafficControlService.Standby())
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Traffic Standby Completed");
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Traffic Standby Failed");
+        }
+
+        IsTaskRunning = false;
+        StateHasChanged();
+    }
+
+    protected async void TrafficShutClick(EventArgs args)
+    {
+        IsTaskRunning = true;
+        StateHasChanged();
+
+        if (await TrafficControlService.Shut())
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Traffic Shut Completed");
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Traffic Shut Failed");
+        }
+
+        IsTaskRunning = false;
+        StateHasChanged();
+    }
+
+    protected async void TrafficTestClick(EventArgs args)
+    {
+        var blinkTime = await JsRuntime.InvokeAsync<string>("prompt", "Blink Time (seconds):");
+        if (!int.TryParse(blinkTime, out _))
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Wrong Blink Time Input");
+            return;
+        }
+        var pinNumber = await JsRuntime.InvokeAsync<string>("prompt", "Pin Number:");
+        if (!int.TryParse(pinNumber, out _))
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Wrong Pin Number Input");
+            return;
+        }
+        
+        IsTaskRunning = true;
+        StateHasChanged();
+
+        if (await TrafficControlService.Test(int.Parse(blinkTime) * 1000, int.Parse(pinNumber)))
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Traffic Test Completed");
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Traffic Test Failed");
+        }
+
+        IsTaskRunning = false;
+        StateHasChanged();
+    }
+
+    protected async void TrafficManualClick(EventArgs args)
+    {
+        var modes = Enum.GetValues(typeof(TrafficLog.TrafficMode)).OfType<TrafficLog.TrafficMode>().Select(m => m.ToString()).ToList();
+        var mode = await JsRuntime.InvokeAsync<string>("prompt", $"Mode ({string.Join(", ", modes)}):");
+
+        if (!modes.Contains(mode))
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Wrong Mode Input");
+            return;
+        }
+        
+        IsTaskRunning = true;
+        StateHasChanged();
+        
+        if (await TrafficLogService.CreateDocument(new TrafficLog(Enum.Parse<TrafficLog.TrafficMode>(mode))))
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Traffic Log Create Completed");
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Traffic Log Create Failed");
+        }
+        
+        IsTaskRunning = false;
+        StateHasChanged();
+    }
+
+}
