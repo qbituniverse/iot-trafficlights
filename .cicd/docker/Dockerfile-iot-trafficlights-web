@@ -11,7 +11,7 @@ WORKDIR /src
 COPY ["TrafficLights.Web/TrafficLights.Web.csproj", "TrafficLights.Web/"]
 RUN dotnet restore "TrafficLights.Web/TrafficLights.Web.csproj"
 
-COPY TrafficLights .
+COPY . .
 WORKDIR "/src/TrafficLights.Web"
 RUN dotnet build "TrafficLights.Web.csproj" -c Release -o /app/build
 
