@@ -45,12 +45,4 @@ public class TrafficControlController : ControllerBase
         await _trafficControlService.Shut();
         return Ok();
     }
-
-    [HttpPost]
-    [Route("test")]
-    public async Task<IActionResult> PostTrafficTest(int blinkTime, int pinNumber)
-    {
-        await _trafficControlService.Test(blinkTime, pinNumber);
-        return Ok();
-    }
 }

@@ -6,5 +6,4 @@ public interface ITrafficControlService
     Task<bool> Stop();
     Task<bool> Standby();
     Task<bool> Shut();
-    Task<bool> Test(int blinkTime, int pinNumber);
 }

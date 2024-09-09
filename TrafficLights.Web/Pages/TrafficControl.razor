@@ -29,9 +29,6 @@ else
         <button class="btn btn-primary w-100" disabled="@IsTaskRunning" @onclick="TrafficShutClick">Traffic Shut</button>
     </div>
     <div class="my-3">
-        <button class="btn btn-primary w-100" disabled="@IsTaskRunning" @onclick="TrafficTestClick">Traffic Test</button>
-    </div>
-    <div class="my-3">
         <button class="btn btn-warning w-100" disabled="@IsTaskRunning" @onclick="TrafficManualClick">Manual Create</button>
     </div>
 }
@@ -111,36 +108,36 @@ else
         StateHasChanged();
     }
 
-    protected async void TrafficTestClick(EventArgs args)
-    {
-        var blinkTime = await JsRuntime.InvokeAsync<string>("prompt", "Blink Time (seconds):");
-        if (!int.TryParse(blinkTime, out _))
-        {
-            await JsRuntime.InvokeVoidAsync("alert", "Wrong Blink Time Input");
-            return;
-        }
-        var pinNumber = await JsRuntime.InvokeAsync<string>("prompt", "Pin Number:");
-        if (!int.TryParse(pinNumber, out _))
-        {
-            await JsRuntime.InvokeVoidAsync("alert", "Wrong Pin Number Input");
-            return;
-        }
+    // protected async void TrafficTestClick(EventArgs args)
+    // {
+    //     var blinkTime = await JsRuntime.InvokeAsync<string>("prompt", "Blink Time (seconds):");
+    //     if (!int.TryParse(blinkTime, out _))
+    //     {
+    //         await JsRuntime.InvokeVoidAsync("alert", "Wrong Blink Time Input");
+    //         return;
+    //     }
+    //     var pinNumber = await JsRuntime.InvokeAsync<string>("prompt", "Pin Number:");
+    //     if (!int.TryParse(pinNumber, out _))
+    //     {
+    //         await JsRuntime.InvokeVoidAsync("alert", "Wrong Pin Number Input");
+    //         return;
+    //     }
         
-        IsTaskRunning = true;
-        StateHasChanged();
+    //     IsTaskRunning = true;
+    //     StateHasChanged();
 
-        if (await TrafficControlService.Test(int.Parse(blinkTime) * 1000, int.Parse(pinNumber)))
-        {
-            await JsRuntime.InvokeVoidAsync("alert", "Traffic Test Completed");
-        }
-        else
-        {
-            await JsRuntime.InvokeVoidAsync("alert", "Traffic Test Failed");
-        }
+    //     if (await TrafficControlService.Test(int.Parse(blinkTime) * 1000, int.Parse(pinNumber)))
+    //     {
+    //         await JsRuntime.InvokeVoidAsync("alert", "Traffic Test Completed");
+    //     }
+    //     else
+    //     {
+    //         await JsRuntime.InvokeVoidAsync("alert", "Traffic Test Failed");
+    //     }
 
-        IsTaskRunning = false;
-        StateHasChanged();
-    }
+    //     IsTaskRunning = false;
+    //     StateHasChanged();
+    // }
 
     protected async void TrafficManualClick(EventArgs args)
     {
@@ -168,5 +165,4 @@ else
         IsTaskRunning = false;
         StateHasChanged();
     }
-
 }

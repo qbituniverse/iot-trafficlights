@@ -13,6 +13,13 @@ export ASPNETCORE_ENVIRONMENT=Test
 #dotnet TrafficLights.Api.dll --no-launch-profile
 dotnet TrafficLights.Api.dll --launch-profile "Api-Test"
 
+# Test
+curl -X GET "http://localhost:5000/api/admin/config"
+curl -X POST "http://localhost:5000/api/trafficcontrol/start"
+curl -X POST "http://localhost:5000/api/trafficcontrol/stop"
+curl -X POST "http://localhost:5000/api/trafficcontrol/standby"
+curl -X POST "http://localhost:5000/api/trafficcontrol/shut"
+
 # Clean-up
 sudo rm -rf /home/iot/code/TrafficLights/TrafficLights.Api
 

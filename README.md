@@ -14,7 +14,9 @@ Traffic Lights solution to control traffic lights, setup on the Raspberry Pi GPI
 
 ### TrafficControl
 
-Use to control the traffic lights pattern, turning different light modes. Configuration consist of 3x LEDs connected to Pi on GPIO ports: 17 (amber), 18 (red), 23 (green).
+Use to control the traffic and pedestrian lights pattern, turning different light modes.
+- Traffic LEDs GPIO mapping: 26 (red), 19 (amber), 13 (green).
+- Pedestrian LEDs GPIO mapping: 27 (red), 17 (green).
 
 |Type|Description|
 |-----|-----|

@@ -2,11 +2,11 @@
 
 namespace TrafficLights.Domain.Modules.TrafficControl;
 
-public class TrafficControlModulePi : ITrafficControlModule
+public class TrafficModulePi : ITrafficModule
 {
-    private const int Red = 18;
-    private const int Amber = 17;
-    private const int Green = 23;
+    private const int Red = 26;
+    private const int Amber = 19;
+    private const int Green = 13;
     private readonly GpioController _gpio = new();
 
     public void Start()
@@ -61,14 +61,5 @@ public class TrafficControlModulePi : ITrafficControlModule
         _gpio.OpenPin(Green, PinMode.Output);
         _gpio.Write(Green, PinValue.Low);
         _gpio.ClosePin(Green);
-    }
-
-    public void Test(int blinkTime, int pinNumber)
-    {
-        _gpio.OpenPin(pinNumber, PinMode.Output);
-        _gpio.Write(pinNumber, PinValue.High);
-        Thread.Sleep(blinkTime);
-        _gpio.Write(pinNumber, PinValue.Low);
-        _gpio.ClosePin(pinNumber);
     }
 }

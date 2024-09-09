@@ -3,7 +3,7 @@ using Iot.Device.Hcsr501;
 
 namespace TrafficLights.Domain.Modules.TrafficSensor;
 
-public class TrafficSensorModulePi : ITrafficSensorModule
+public class SensorModulePi : ISensorModule
 {
     private const int Output = 21;
 

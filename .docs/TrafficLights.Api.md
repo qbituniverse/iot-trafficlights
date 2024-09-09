@@ -12,7 +12,6 @@ For a complete OpenAPI specification please refer to [TrafficLights.Api.Spec.jso
 ||POST /api/trafficcontrol/stop|Set the traffic lights to stop traffic condition (red light).|
 ||POST /api/trafficcontrol/standby|Set the traffic lights to standby traffic condition (amber light).|
 ||POST /api/trafficcontrol/shut|Shut down the traffic (no light).|
-||POST /api/trafficcontrol/test<br />Query Parameters:<br />pinNumber: integer - light to invoke<br />blinkTime: integer - duration how long the light is on|Test the traffic light.|
 |**TrafficLog**|GET /api/trafficlog/id/{id}<br />{id}: string|Get traffic log record by Id.|
 ||GET /api/trafficlog/date/{date}<br />{date}: string [dd-MM-yyyy]|Get traffic log records by date.|
 ||GET /api/trafficlog/all|Get all traffic log records.|

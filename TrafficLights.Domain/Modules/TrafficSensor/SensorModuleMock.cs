@@ -3,7 +3,7 @@ using Iot.Device.Hcsr501;
 
 namespace TrafficLights.Domain.Modules.TrafficSensor;
 
-public class TrafficSensorModuleMock : ITrafficSensorModule
+public class SensorModuleMock : ISensorModule
 {
     public event EventHandler<Models.TrafficSensor.TrafficSensor>? SensorValueChangedEvent;
 

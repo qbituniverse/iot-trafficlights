@@ -34,19 +34,19 @@ internal class RunTrafficSensor : IRun
         {
             while (true)
             {
-                if (IsMotionDetected && trafficType != TrafficLog.TrafficMode.Start)
-                {
-                    _logger.LogInformation("Traffic Change to Start");
-                    _trafficControlService.Start();
-                    trafficType = TrafficLog.TrafficMode.Start;
-                    //Thread.Sleep(10000);
-                }
-
-                if (!IsMotionDetected && trafficType != TrafficLog.TrafficMode.Stop)
+                if (IsMotionDetected && trafficType != TrafficLog.TrafficMode.Stop)
                 {
                     _logger.LogInformation("Traffic Change to Stop");
                     _trafficControlService.Stop();
                     trafficType = TrafficLog.TrafficMode.Stop;
+                    Thread.Sleep(10000);
+                }
+
+                if (!IsMotionDetected && trafficType != TrafficLog.TrafficMode.Start)
+                {
+                    _logger.LogInformation("Traffic Change to Start");
+                    _trafficControlService.Start();
+                    trafficType = TrafficLog.TrafficMode.Start;
                 }
             }
             // ReSharper disable once FunctionNeverReturns

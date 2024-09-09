@@ -1,10 +1,8 @@
 ﻿namespace TrafficLights.Domain.Modules.TrafficControl;
 
-public interface ITrafficControlModule
+public interface IPedestrianModule
 {
     void Start();
     void Stop();
-    void Standby();
     void Shut();
-    void Test(int blinkTime, int pinNumber);
 }

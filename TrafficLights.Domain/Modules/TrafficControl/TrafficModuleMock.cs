@@ -1,6 +1,6 @@
 ﻿namespace TrafficLights.Domain.Modules.TrafficControl;
 
-public class TrafficControlModuleMock : ITrafficControlModule
+public class TrafficModuleMock : ITrafficModule
 {
     public void Start()
     {
@@ -33,10 +33,5 @@ public class TrafficControlModuleMock : ITrafficControlModule
     public void Shut()
     {
         // All Off
-    }
-
-    public void Test(int blinkTime, int pinNumber)
-    {
-        Thread.Sleep(blinkTime);
     }
 }

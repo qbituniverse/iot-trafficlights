@@ -32,11 +32,13 @@ internal class Register
         switch (configuration.Modules!.TrafficControl!.Type)
         {
             case "Pi":
-                services.AddSingleton<ITrafficControlModule, TrafficControlModulePi>();
+                services.AddSingleton<ITrafficModule, TrafficModulePi>();
+                services.AddSingleton<IPedestrianModule, PedestrianModulePi>();
                 break;
 
             default:
-                services.AddSingleton<ITrafficControlModule, TrafficControlModuleMock>();
+                services.AddSingleton<ITrafficModule, TrafficModuleMock>();
+                services.AddSingleton<IPedestrianModule, PedestrianModuleMock>();
                 break;
         }
 

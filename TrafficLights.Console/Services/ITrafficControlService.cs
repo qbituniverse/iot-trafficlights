@@ -6,5 +6,4 @@ public interface ITrafficControlService
     Task Stop();
     Task Standby();
     Task Shut();
-    Task Test(int blinkTime, int pinNumber);
 }
