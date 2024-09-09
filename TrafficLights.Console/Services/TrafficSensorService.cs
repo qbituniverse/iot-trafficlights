@@ -6,13 +6,13 @@ namespace TrafficLights.Console.Services;
 
 internal class TrafficSensorService : ITrafficSensorService
 {
-    private readonly ITrafficSensorModule _trafficSensorModule;
+    private readonly ISensorModule _trafficSensorModule;
     private readonly ILogger<TrafficSensorService> _logger;
 
     public event EventHandler<TrafficSensor>? SensorValueChangedEvent;
 
     public TrafficSensorService(
-        ITrafficSensorModule trafficSensorModule,
+        ISensorModule trafficSensorModule,
         ILogger<TrafficSensorService> logger)
     {
         _trafficSensorModule = trafficSensorModule;

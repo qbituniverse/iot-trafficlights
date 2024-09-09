@@ -28,12 +28,12 @@ internal class RunTrafficSensorV2 : IRun
             if (hcsr501.IsMotionDetected)
             {
                 _logger.LogInformation("Motion Detected");
-                _trafficControlService.Test(500, 17);
+                _trafficControlService.Stop();
             }
             else
             {
                 _logger.LogInformation("Motion NOT Detected");
-                _trafficControlService.Test(500, 23);
+                _trafficControlService.Start();
             }
         }
         // ReSharper disable once FunctionNeverReturns

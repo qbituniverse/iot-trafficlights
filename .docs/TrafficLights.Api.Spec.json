@@ -77,36 +77,6 @@
         }
       }
     },
-    "/api/TrafficControl/test": {
-      "post": {
-        "tags": [
-          "TrafficControl"
-        ],
-        "parameters": [
-          {
-            "name": "blinkTime",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "pinNumber",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/TrafficLog/id/{id}": {
       "get": {
         "tags": [

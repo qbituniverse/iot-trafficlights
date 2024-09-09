@@ -30,7 +30,8 @@ internal class Register
         switch (configuration.Modules!.TrafficControl!.Type)
         {
             case "Pi":
-                services.AddSingleton<ITrafficControlModule, TrafficControlModulePi>();
+                services.AddSingleton<ITrafficModule, TrafficModulePi>();
+                services.AddSingleton<IPedestrianModule, PedestrianModulePi>();
                 services.AddSingleton<ITrafficControlService, TrafficControlService>();
                 break;
 
@@ -41,7 +42,8 @@ internal class Register
                 break;
 
             default:
-                services.AddSingleton<ITrafficControlModule, TrafficControlModuleMock>();
+                services.AddSingleton<ITrafficModule, TrafficModuleMock>();
+                services.AddSingleton<IPedestrianModule, PedestrianModuleMock>();
                 services.AddSingleton<ITrafficControlService, TrafficControlService>();
                 break;
         }
@@ -49,12 +51,12 @@ internal class Register
         switch (configuration.Modules!.TrafficSensor!.Type)
         {
             case "Pi":
-                services.AddSingleton<ITrafficSensorModule, TrafficSensorModulePi>();
+                services.AddSingleton<ISensorModule, SensorModulePi>();
                 services.AddSingleton<ITrafficSensorService, TrafficSensorService>();
                 break;
 
             default:
-                services.AddSingleton<ITrafficSensorModule, TrafficSensorModuleMock>();
+                services.AddSingleton<ISensorModule, SensorModuleMock>();
                 services.AddSingleton<ITrafficSensorService, TrafficSensorService>();
                 break;
         }

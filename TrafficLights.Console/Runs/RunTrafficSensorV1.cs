@@ -30,12 +30,12 @@ internal class RunTrafficSensorV1 : IRun
             if (args.PinValue == PinValue.High)
             {
                 _logger.LogInformation("Motion Detected");
-                _trafficControlService.Test(500, 17);
+                _trafficControlService.Stop();
             }
             else
             {
                 _logger.LogInformation("Motion NOT Detected");
-                _trafficControlService.Test(500, 23);
+                _trafficControlService.Start();
             }
         }
 
