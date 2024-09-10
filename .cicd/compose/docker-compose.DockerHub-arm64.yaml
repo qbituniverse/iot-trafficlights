@@ -1,7 +1,7 @@
 services:
   db:
     image: mysql:latest
-    restart: on-failure
+    restart: always
     container_name: iot-trafficlights-mysql
     environment:
       - TZ=Europe/Warsaw
@@ -19,7 +19,7 @@ services:
     image: qbituniverse/iot-trafficlights-api:latest
     depends_on:
       - db
-    restart: on-failure
+    restart: always
     container_name: iot-trafficlights-api
     environment:
       - TZ=Europe/Warsaw
@@ -38,7 +38,7 @@ services:
     image: qbituniverse/iot-trafficlights-web:latest
     depends_on:
       - db
-    restart: on-failure
+    restart: always
     container_name: iot-trafficlights-web
     environment:
       - TZ=Europe/Warsaw
@@ -60,7 +60,7 @@ services:
     image: qbituniverse/iot-trafficlights-console:latest
     depends_on:
       - db
-    restart: on-failure
+    restart: always
     container_name: iot-trafficlights-console
     environment:
       - TZ=Europe/Warsaw
