@@ -9,6 +9,12 @@ $DB_DIR=""
 docker run --name iot-trafficlights-mysql --network iot-trafficlights -e MYSQL_ROOT_PASSWORD=${DB_PWD} -e MYSQL_DATABASE=TrafficLights -v ${DB_DIR}:/var/lib/mysql -d -p 3307:3306 mysql:latest
 docker logs iot-trafficlights-mysql
 
+# Queries
+SELECT * FROM TrafficLights.TrafficLogs ORDER BY TimeStamp DESC;
+SELECT * FROM TrafficLights.ApiLogs ORDER BY TimeStamp DESC;
+SELECT * FROM TrafficLights.WebLogs ORDER BY TimeStamp DESC;
+SELECT * FROM TrafficLights.ConsoleLogs ORDER BY TimeStamp DESC;
+
 # Clean-up
 docker rm -v -f iot-trafficlights-mysql
 docker network remove iot-trafficlights

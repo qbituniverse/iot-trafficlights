@@ -30,12 +30,13 @@ internal class RunTrafficSensorV1 : IRun
             if (args.PinValue == PinValue.High)
             {
                 _logger.LogInformation("Motion Detected");
-                _trafficControlService.Stop();
+                _trafficControlService.Standby();
+                Thread.Sleep(2000);
             }
             else
             {
                 _logger.LogInformation("Motion NOT Detected");
-                _trafficControlService.Start();
+                _trafficControlService.Shut();
             }
         }
 
