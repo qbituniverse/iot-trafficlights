@@ -1,33 +1,30 @@
-﻿using MySql.Data.MySqlClient;
+﻿using System.Data.SQLite;
 using TrafficLights.Domain.Models.TrafficLog;
 
 namespace TrafficLights.Domain.Repositories.TrafficLog;
 
-public class TrafficLogRepositoryMySql : ITrafficLogRepository
+public class TrafficLogRepositorySQLite : ITrafficLogRepository
 {
     private string? ConnectionString { get; set; }
 
-    private MySqlConnection GetConnection()
+    private SQLiteConnection GetConnection()
     {
-        return new MySqlConnection(ConnectionString);
+        return new SQLiteConnection($"Data Source={ConnectionString}; Version=3;");
     }
 
-    public TrafficLogRepositoryMySql(string? connectionString)
+    public TrafficLogRepositorySQLite(string? connectionString)
     {
         ConnectionString = connectionString;
 
         using var connection = GetConnection();
         connection.Open();
-        using var command = new MySqlCommand("SHOW TABLES FROM TrafficLights LIKE 'TrafficLogs';", connection);
-        var reader = command.ExecuteScalar();
+        const string trafficLog = "CREATE TABLE IF NOT EXISTS TrafficLogs (" +
+                                  "Id INTEGER NOT NULL, " +
+                                  "Mode TEXT NOT NULL, " +
+                                  "TimeStamp TEXT NOT NULL, " +
+                                  "PRIMARY KEY (Id AUTOINCREMENT));";
+        using var command = new SQLiteCommand(trafficLog, connection);
 
-        if (reader != null) return;
-
-        const string trafficLog = "CREATE TABLE TrafficLights.TrafficLogs (" +
-                                  "Id INT NOT NULL AUTO_INCREMENT, " +
-                                  "Mode VARCHAR(7) NOT NULL, " +
-                                  "TimeStamp DATETIME NOT NULL, " +
-                                  "PRIMARY KEY (Id));";
         command.CommandText = trafficLog;
         command.ExecuteNonQuery();
         connection.Close();
@@ -39,16 +36,16 @@ public class TrafficLogRepositoryMySql : ITrafficLogRepository
 
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new MySqlCommand("SELECT * FROM TrafficLights.TrafficLogs " +
-                                                   $"WHERE Id = '{id}';", connection);
+        await using var command = new SQLiteCommand("SELECT * FROM TrafficLogs " +
+                                                    $"WHERE Id = {id};", connection);
 
         await using var reader = await command.ExecuteReaderAsync();
 
         while (await reader.ReadAsync())
         {
-            var trafficLogMySql = new TrafficLogMySql(reader.GetInt32(0), reader.GetString(1), reader.GetDateTime(2));
+            var trafficLogSQLite = new TrafficLogSQLite(reader.GetInt32(0), reader.GetString(1), reader.GetDateTime(2));
             await connection.CloseAsync();
-            return trafficLogMySql.MapToTrafficLog();
+            return trafficLogSQLite.MapToTrafficLog();
         }
 
         return null!;
@@ -63,18 +60,18 @@ public class TrafficLogRepositoryMySql : ITrafficLogRepository
 
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new MySqlCommand("SELECT * FROM TrafficLights.TrafficLogs " +
-                                                   $"WHERE TimeStamp >= '{fromDate.ToDatabaseFormat()}' " +
-                                                   $"AND TimeStamp <= '{toDate.ToDatabaseFormat()}' " +
-                                                   "ORDER BY TimeStamp DESC;", connection);
+        await using var command = new SQLiteCommand("SELECT * FROM TrafficLogs " +
+                                                    $"WHERE TimeStamp >= '{fromDate.ToDatabaseFormat()}' " +
+                                                    $"AND TimeStamp <= '{toDate.ToDatabaseFormat()}' " +
+                                                    "ORDER BY TimeStamp DESC;", connection);
 
         await using var reader = await command.ExecuteReaderAsync();
         var logs = new List<Models.TrafficLog.TrafficLog>();
 
         while (await reader.ReadAsync())
         {
-            var trafficLogMySql = new TrafficLogMySql(reader.GetInt32(0), reader.GetString(1), reader.GetDateTime(2));
-            logs.Add(trafficLogMySql.MapToTrafficLog());
+            var trafficLogSqLite = new TrafficLogSQLite(reader.GetInt32(0), reader.GetString(1), reader.GetDateTime(2));
+            logs.Add(trafficLogSqLite.MapToTrafficLog());
         }
 
         await connection.CloseAsync();
@@ -86,16 +83,16 @@ public class TrafficLogRepositoryMySql : ITrafficLogRepository
     {
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new MySqlCommand("SELECT * FROM TrafficLights.TrafficLogs " +
-                                                   "ORDER BY TimeStamp DESC;", connection);
+        await using var command = new SQLiteCommand("SELECT * FROM TrafficLogs " +
+                                                    "ORDER BY TimeStamp DESC;", connection);
 
         await using var reader = await command.ExecuteReaderAsync();
         var logs = new List<Models.TrafficLog.TrafficLog>();
 
         while (await reader.ReadAsync())
         {
-            var trafficLogMySql = new TrafficLogMySql(reader.GetInt32(0), reader.GetString(1), reader.GetDateTime(2));
-            logs.Add(trafficLogMySql.MapToTrafficLog());
+            var trafficLogSqLite = new TrafficLogSQLite(reader.GetInt32(0), reader.GetString(1), reader.GetDateTime(2));
+            logs.Add(trafficLogSqLite.MapToTrafficLog());
         }
 
         await connection.CloseAsync();
@@ -105,13 +102,13 @@ public class TrafficLogRepositoryMySql : ITrafficLogRepository
 
     public async Task<string?> Create(Models.TrafficLog.TrafficLog trafficLog)
     {
-        var trafficLogMySql = trafficLog.MapToMySql();
+        var trafficLogSQLite = trafficLog.MapToSQLite();
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new MySqlCommand("INSERT INTO TrafficLights.TrafficLogs (Mode, TimeStamp) " +
-                                                   $"VALUES ('{trafficLogMySql.Mode}', " +
-                                                   $"'{trafficLogMySql.TimeStamp.ToDatabaseFormat()}');" +
-                                                   "SELECT LAST_INSERT_ID();", connection);
+        await using var command = new SQLiteCommand("INSERT INTO TrafficLogs (Mode, TimeStamp) " +
+                                                    $"VALUES ('{trafficLogSQLite.Mode}', " +
+                                                    $"'{trafficLogSQLite.TimeStamp.ToDatabaseFormat()}');" +
+                                                    "SELECT last_insert_rowid();", connection);
 
         var response = await command.ExecuteScalarAsync();
         await connection.CloseAsync();
@@ -123,13 +120,13 @@ public class TrafficLogRepositoryMySql : ITrafficLogRepository
     {
         if (!int.TryParse(trafficLog.Id, out _)) return null!;
 
-        var trafficLogMySql = trafficLog.MapToMySql();
+        var trafficLogSQLite = trafficLog.MapToSQLite();
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new MySqlCommand("UPDATE TrafficLights.TrafficLogs " +
-                                                   $"SET Mode = '{trafficLogMySql.Mode}', " +
-                                                   $"TimeStamp = '{trafficLogMySql.TimeStamp.ToDatabaseFormat()}'" +
-                                                   $"WHERE Id = {trafficLogMySql.Id};", connection);
+        await using var command = new SQLiteCommand("UPDATE TrafficLogs " +
+                                                    $"SET Mode = '{trafficLogSQLite.Mode}', " +
+                                                    $"TimeStamp = '{trafficLogSQLite.TimeStamp.ToDatabaseFormat()}'" +
+                                                    $"WHERE Id = {trafficLogSQLite.Id};", connection);
 
         await command.ExecuteNonQueryAsync();
         await connection.CloseAsync();
@@ -143,8 +140,8 @@ public class TrafficLogRepositoryMySql : ITrafficLogRepository
 
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new MySqlCommand("DELETE FROM TrafficLights.TrafficLogs " +
-                                                   $"WHERE Id = {id};", connection);
+        await using var command = new SQLiteCommand("DELETE FROM TrafficLogs " +
+                                                    $"WHERE Id = {id};", connection);
 
         var result = await command.ExecuteNonQueryAsync();
         await connection.CloseAsync();
@@ -161,9 +158,9 @@ public class TrafficLogRepositoryMySql : ITrafficLogRepository
 
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new MySqlCommand("DELETE FROM TrafficLights.TrafficLogs " +
-                                                   $"WHERE TimeStamp >= '{fromDate.ToDatabaseFormat()}' " +
-                                                   $"AND TimeStamp <= '{toDate.ToDatabaseFormat()}' ", connection);
+        await using var command = new SQLiteCommand("DELETE FROM TrafficLogs " +
+                                                    $"WHERE TimeStamp >= '{fromDate.ToDatabaseFormat()}' " +
+                                                    $"AND TimeStamp <= '{toDate.ToDatabaseFormat()}' ", connection);
 
         var result = await command.ExecuteNonQueryAsync();
         await connection.CloseAsync();
@@ -175,7 +172,7 @@ public class TrafficLogRepositoryMySql : ITrafficLogRepository
     {
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new MySqlCommand("DELETE FROM TrafficLights.TrafficLogs;", connection);
+        await using var command = new SQLiteCommand("DELETE FROM TrafficLogs;", connection);
 
         var result = await command.ExecuteNonQueryAsync();
         await connection.CloseAsync();

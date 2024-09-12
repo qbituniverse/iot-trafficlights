@@ -1,10 +1,10 @@
+using System.Data.SQLite;
 using System.Text.Json;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using TrafficLights.Api;
 using TrafficLights.Api.Models;
-using RollingInterval = Serilog.Sinks.MongoDB.RollingInterval;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +28,16 @@ var loggerConfiguration = new LoggerConfiguration()
 
 switch (apiConfiguration!.Repository!.Type)
 {
+    case "SQLite":
+        if (!File.Exists(apiConfiguration.Repository!.SQLite!.Url))
+            SQLiteConnection.CreateFile(apiConfiguration.Repository!.SQLite!.Url);
+
+        loggerConfiguration.WriteTo.SQLite(
+            sqliteDbPath: apiConfiguration.Repository.SQLite!.Url,
+            tableName: "ApiLogs",
+            restrictedToMinimumLevel: LogEventLevel.Warning);
+        break;
+
     case "MySql":
         loggerConfiguration.WriteTo.MySQL(
             connectionString: apiConfiguration.Repository.MySql!.Url, 
@@ -37,12 +47,9 @@ switch (apiConfiguration!.Repository!.Type)
         
     case "MongoDb":
         loggerConfiguration.WriteTo.MongoDBBson(
-            restrictedToMinimumLevel: LogEventLevel.Warning,
             databaseUrl: $"{apiConfiguration.Repository.MongoDb!.Url}/TrafficLights",
             collectionName: "ApiLogs",
-            rollingInterval: RollingInterval.Day,
-            cappedMaxSizeMb: 1024,
-            cappedMaxDocuments: 50000);
+            restrictedToMinimumLevel: LogEventLevel.Warning);
         break;
 }
 

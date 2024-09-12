@@ -14,6 +14,10 @@ internal class Register
 
         switch (configuration.Repository!.Type)
         {
+            case "SQLite":
+                services.AddSingleton<ITrafficLogRepository>(new TrafficLogRepositorySQLite(configuration.Repository.SQLite!.Url));
+                break;
+
             case "MySql":
                 services.AddSingleton<ITrafficLogRepository>(
                     new TrafficLogRepositoryMySql(configuration.Repository.MySql!.Url));

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using System.Data.SQLite;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -9,7 +10,6 @@ using TrafficLights.Console;
 using TrafficLights.Console.Runs;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
-using RollingInterval = Serilog.Sinks.MongoDB.RollingInterval;
 
 var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
@@ -36,6 +36,16 @@ var loggerConfiguration = new LoggerConfiguration()
 
 switch (consoleConfiguration.Repository!.Type)
 {
+    case "SQLite":
+        if (!File.Exists(consoleConfiguration.Repository!.SQLite!.Url))
+            SQLiteConnection.CreateFile(consoleConfiguration.Repository!.SQLite!.Url);
+        
+        loggerConfiguration.WriteTo.SQLite(
+            sqliteDbPath: consoleConfiguration.Repository.SQLite!.Url,
+            tableName: "ConsoleLogs",
+            restrictedToMinimumLevel: LogEventLevel.Warning);
+        break;
+
     case "MySql":
         loggerConfiguration.WriteTo.MySQL(
             connectionString: consoleConfiguration.Repository.MySql!.Url,
@@ -45,12 +55,9 @@ switch (consoleConfiguration.Repository!.Type)
 
     case "MongoDb":
         loggerConfiguration.WriteTo.MongoDBBson(
-            restrictedToMinimumLevel: LogEventLevel.Warning,
             databaseUrl: $"{consoleConfiguration.Repository.MongoDb!.Url}/TrafficLights",
             collectionName: "ConsoleLogs",
-            rollingInterval: RollingInterval.Day,
-            cappedMaxSizeMb: 1024,
-            cappedMaxDocuments: 50000);
+            restrictedToMinimumLevel: LogEventLevel.Warning);
         break;
 }
 

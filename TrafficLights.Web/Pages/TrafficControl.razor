@@ -108,37 +108,6 @@ else
         StateHasChanged();
     }
 
-    // protected async void TrafficTestClick(EventArgs args)
-    // {
-    //     var blinkTime = await JsRuntime.InvokeAsync<string>("prompt", "Blink Time (seconds):");
-    //     if (!int.TryParse(blinkTime, out _))
-    //     {
-    //         await JsRuntime.InvokeVoidAsync("alert", "Wrong Blink Time Input");
-    //         return;
-    //     }
-    //     var pinNumber = await JsRuntime.InvokeAsync<string>("prompt", "Pin Number:");
-    //     if (!int.TryParse(pinNumber, out _))
-    //     {
-    //         await JsRuntime.InvokeVoidAsync("alert", "Wrong Pin Number Input");
-    //         return;
-    //     }
-        
-    //     IsTaskRunning = true;
-    //     StateHasChanged();
-
-    //     if (await TrafficControlService.Test(int.Parse(blinkTime) * 1000, int.Parse(pinNumber)))
-    //     {
-    //         await JsRuntime.InvokeVoidAsync("alert", "Traffic Test Completed");
-    //     }
-    //     else
-    //     {
-    //         await JsRuntime.InvokeVoidAsync("alert", "Traffic Test Failed");
-    //     }
-
-    //     IsTaskRunning = false;
-    //     StateHasChanged();
-    // }
-
     protected async void TrafficManualClick(EventArgs args)
     {
         var modes = Enum.GetValues(typeof(TrafficLog.TrafficMode)).OfType<TrafficLog.TrafficMode>().Select(m => m.ToString()).ToList();

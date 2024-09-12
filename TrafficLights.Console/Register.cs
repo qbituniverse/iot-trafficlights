@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using TrafficLights.Console.Models;
 using TrafficLights.Console.Runs;
+using TrafficLights.Console.Runs.Sandbox;
 using TrafficLights.Console.Services;
 using TrafficLights.Domain.Modules.TrafficControl;
 using TrafficLights.Domain.Modules.TrafficSensor;
@@ -14,6 +15,10 @@ internal class Register
     {
         switch (configuration.Repository!.Type)
         {
+            case "SQLite":
+                services.AddSingleton<ITrafficLogRepository>(new TrafficLogRepositorySQLite(configuration.Repository.SQLite!.Url));
+                break;
+
             case "MySql":
                 services.AddSingleton<ITrafficLogRepository>(new TrafficLogRepositoryMySql(configuration.Repository.MySql!.Url));
                 break;
