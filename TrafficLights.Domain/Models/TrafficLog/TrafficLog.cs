@@ -43,7 +43,6 @@ public class TrafficLog
         Start,
         Stop,
         Standby,
-        Shut,
-        Test
+        Shut
     }
 }

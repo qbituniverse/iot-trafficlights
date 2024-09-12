@@ -1,9 +1,23 @@
-﻿using System.Globalization;
-
-namespace TrafficLights.Domain.Models.TrafficLog;
+﻿namespace TrafficLights.Domain.Models.TrafficLog;
 
 public static class TrafficLogExtensions
 {
+    public static TrafficLogSQLite MapToSQLite(this TrafficLog trafficLog)
+    {
+        return new TrafficLogSQLite(
+            int.TryParse(trafficLog.Id, out _) ? int.Parse(trafficLog.Id) : 0,
+            trafficLog.Mode,
+            trafficLog.TimeStamp);
+    }
+
+    public static TrafficLog MapToTrafficLog(this TrafficLogSQLite trafficLogSQLite)
+    {
+        return new TrafficLog(
+            trafficLogSQLite.Id.ToString(),
+            Enum.Parse<TrafficLog.TrafficMode>(trafficLogSQLite.Mode),
+            trafficLogSQLite.TimeStamp);
+    }
+
     public static TrafficLogMySql MapToMySql(this TrafficLog trafficLog)
     {
         return new TrafficLogMySql(

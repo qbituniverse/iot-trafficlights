@@ -11,8 +11,11 @@ Console app used to run traffic lights module or traffic sensor module.
 ||Production|Use this for the final production deployment of the running application on your network with Raspberry Pi connected.|
 |**Repository**||Repository configuration.|
 |Repository.Type|Mock|Defaults to *empty string ("")*. Hard-coded in-memory data, no persistent storage.|
+||SQLite|SQLite database backend.<br>_NOTE: Works on AMD and ARM architectures_.|
 ||MySql|MySql database backend.<br>_NOTE: Works on AMD and ARM architectures_.|
 ||MongoDb|MongoDb database backend.<br>_NOTE: Not available for ARM architecture_.|
+|Repository.SQLite||SQLite details.|
+|Repository.SQLite.Url|Connection string|Connection details to SQLite.|
 |Repository.MySql||MySql details.|
 |Repository.MySql.Url|Connection string|Connection details to MySql.|
 |Repository.MongoDb||MongoDb details.|
@@ -38,7 +41,13 @@ Console app used to run traffic lights module or traffic sensor module.
   "Configuration": {
     "Environment": "string",
     "Repository": {
-      "Type": "string",
+      "Type": "SQLite",
+      "SQLite": {
+        "Url": "PATH_TO_DATABASE\\DATABASE_NAME"
+      },
+      "SQLite": {
+        "Url": "string"
+      },
       "MySql": {
         "Url": "string"
       },

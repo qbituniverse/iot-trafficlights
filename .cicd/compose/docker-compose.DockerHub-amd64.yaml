@@ -1,19 +1,19 @@
 services:
-  db:
-    image: mysql:latest
-    restart: always
-    container_name: iot-trafficlights-mysql
-    environment:
-      - TZ=Europe/Warsaw
-      - MYSQL_ROOT_PASSWORD=${DB_PWD}
-      - MYSQL_DATABASE=TrafficLights
-    volumes:
-      - ${DB_DIR}:/var/lib/mysql
-    ports:
-      - 3307:3306
-    tty: true
-    networks:
-      - iot-trafficlights
+  # db:
+  #   image: mysql:latest
+  #   restart: always
+  #   container_name: iot-trafficlights-mysql
+  #   environment:
+  #     - TZ=Europe/Warsaw
+  #     - MYSQL_ROOT_PASSWORD=${DB_PWD}
+  #     - MYSQL_DATABASE=TrafficLights
+  #   volumes:
+  #     - ${DB_DIR}:/var/lib/mysql
+  #   ports:
+  #     - 3307:3306
+  #   tty: true
+  #   networks:
+  #     - iot-trafficlights
 
   # db:
   #   image: mongo:latest
@@ -31,14 +31,13 @@ services:
 
   api:
     image: qbituniverse/iot-trafficlights-api:latest
-    depends_on:
-      - db
     restart: always
     container_name: iot-trafficlights-api
     environment:
       - TZ=Europe/Warsaw
       - ApiConfiguration__Environment=Development
-      - ApiConfiguration__Repository__Type=MySql
+      - ApiConfiguration__Repository__Type=SQLite
+      - ApiConfiguration__Repository__SQLite__Url=C:\Users\marci\OneDrive\Development\Projects\QbitUniverse\IoT\Data\TrafficLights\SQLite\TrafficLights.db
       - ApiConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=TrafficLights
       - ApiConfiguration__Repository__MongoDb__Url=Server=mongodb://localhost:27017
       - ApiConfiguration__Modules__TrafficControl__Type=Mock
@@ -50,14 +49,13 @@ services:
 
   web:
     image: qbituniverse/iot-trafficlights-web:latest
-    depends_on:
-      - db
     restart: always
     container_name: iot-trafficlights-web
     environment:
       - TZ=Europe/Warsaw
       - WebConfiguration__Environment=Development
-      - WebConfiguration__Repository__Type=MySql
+      - WebConfiguration__Repository__Type=SQLite
+      - WebConfiguration__Repository__SQLite__Url=C:\Users\marci\OneDrive\Development\Projects\QbitUniverse\IoT\Data\TrafficLights\SQLite\TrafficLights.db
       - WebConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=TrafficLights
       - WebConfiguration__Repository__MongoDb__Url=Server=mongodb://localhost:27017
       - WebConfiguration__Modules__TrafficControl__Type=Mock
@@ -72,14 +70,13 @@ services:
 
   console:
     image: qbituniverse/iot-trafficlights-console:latest
-    depends_on:
-      - db
     restart: always
     container_name: iot-trafficlights-console
     environment:
       - TZ=Europe/Warsaw
       - ConsoleConfiguration__Environment=Development
-      - ConsoleConfiguration__Repository__Type=MySql
+      - ConsoleConfiguration__Repository__Type=SQLite
+      - ConsoleConfiguration__Repository__SQLite__Url=C:\Users\marci\OneDrive\Development\Projects\QbitUniverse\IoT\Data\TrafficLights\SQLite\TrafficLights.db
       - ConsoleConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=TrafficLights
       - ConsoleConfiguration__Repository__MongoDb__Url=Server=mongodb://localhost:27017
       - ConsoleConfiguration__Modules__TrafficControl__Type=Mock

@@ -30,8 +30,11 @@ Web app project used to control the traffic lights module from a Razor UI HTTP w
 ||Production|Use this for the final production deployment of the running application on your network with Raspberry Pi connected.|
 |**Repository**||Repository configuration.|
 |Repository.Type|Mock|Defaults to *empty string ("")*. Hard-coded in-memory data, no persistent storage.|
+||SQLite|SQLite database backend.<br>_NOTE: Works on AMD and ARM architectures_.|
 ||MySql|MySql database backend.<br>_NOTE: Works on AMD and ARM architectures_.|
 ||MongoDb|MongoDb database backend.<br>_NOTE: Not available for ARM architecture_.|
+|Repository.SQLite||SQLite details.|
+|Repository.SQLite.Url|Connection string|Connection details to SQLite.|
 |Repository.MySql||MySql details.|
 |Repository.MySql.Url|Connection string|Connection details to MySql.|
 |Repository.MongoDb||MongoDb details.|
@@ -57,6 +60,9 @@ Web app project used to control the traffic lights module from a Razor UI HTTP w
     "Environment": "string",
     "Repository": {
       "Type": "string",
+      "SQLite": {
+        "Url": "string"
+      },
       "MySql": {
         "Url": "string"
       },
@@ -83,7 +89,10 @@ Web app project used to control the traffic lights module from a Razor UI HTTP w
   "Configuration": {
     "Environment": "Development",
     "Repository": {
-      "Type": "MySql",
+      "Type": "SQLite",
+      "SQLite": {
+        "Url": "PATH_TO_DATABASE\\DATABASE_NAME"
+      },
       "MySql": {
         "Url": "Server=127.0.0.1;Port=3306;User ID=root;Password=YOUR_PASSWORD;Database=DATABASE_NAME"
       },
