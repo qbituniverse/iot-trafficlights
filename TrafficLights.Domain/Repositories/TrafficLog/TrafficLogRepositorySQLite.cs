@@ -1,4 +1,4 @@
-﻿using System.Data.SQLite;
+﻿using Microsoft.Data.Sqlite;
 using TrafficLights.Domain.Models.TrafficLog;
 
 namespace TrafficLights.Domain.Repositories.TrafficLog;
@@ -7,9 +7,9 @@ public class TrafficLogRepositorySQLite : ITrafficLogRepository
 {
     private string? ConnectionString { get; set; }
 
-    private SQLiteConnection GetConnection()
+    private SqliteConnection GetConnection()
     {
-        return new SQLiteConnection($"Data Source={ConnectionString}; Version=3;");
+        return new SqliteConnection($"Data Source={ConnectionString};");
     }
 
     public TrafficLogRepositorySQLite(string? connectionString)
@@ -23,7 +23,7 @@ public class TrafficLogRepositorySQLite : ITrafficLogRepository
                                   "Mode TEXT NOT NULL, " +
                                   "TimeStamp TEXT NOT NULL, " +
                                   "PRIMARY KEY (Id AUTOINCREMENT));";
-        using var command = new SQLiteCommand(trafficLog, connection);
+        using var command = new SqliteCommand(trafficLog, connection);
 
         command.CommandText = trafficLog;
         command.ExecuteNonQuery();
@@ -36,7 +36,7 @@ public class TrafficLogRepositorySQLite : ITrafficLogRepository
 
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new SQLiteCommand("SELECT * FROM TrafficLogs " +
+        await using var command = new SqliteCommand("SELECT * FROM TrafficLogs " +
                                                     $"WHERE Id = {id};", connection);
 
         await using var reader = await command.ExecuteReaderAsync();
@@ -60,7 +60,7 @@ public class TrafficLogRepositorySQLite : ITrafficLogRepository
 
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new SQLiteCommand("SELECT * FROM TrafficLogs " +
+        await using var command = new SqliteCommand("SELECT * FROM TrafficLogs " +
                                                     $"WHERE TimeStamp >= '{fromDate.ToDatabaseFormat()}' " +
                                                     $"AND TimeStamp <= '{toDate.ToDatabaseFormat()}' " +
                                                     "ORDER BY TimeStamp DESC;", connection);
@@ -83,7 +83,7 @@ public class TrafficLogRepositorySQLite : ITrafficLogRepository
     {
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new SQLiteCommand("SELECT * FROM TrafficLogs " +
+        await using var command = new SqliteCommand("SELECT * FROM TrafficLogs " +
                                                     "ORDER BY TimeStamp DESC;", connection);
 
         await using var reader = await command.ExecuteReaderAsync();
@@ -105,7 +105,7 @@ public class TrafficLogRepositorySQLite : ITrafficLogRepository
         var trafficLogSQLite = trafficLog.MapToSQLite();
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new SQLiteCommand("INSERT INTO TrafficLogs (Mode, TimeStamp) " +
+        await using var command = new SqliteCommand("INSERT INTO TrafficLogs (Mode, TimeStamp) " +
                                                     $"VALUES ('{trafficLogSQLite.Mode}', " +
                                                     $"'{trafficLogSQLite.TimeStamp.ToDatabaseFormat()}');" +
                                                     "SELECT last_insert_rowid();", connection);
@@ -123,7 +123,7 @@ public class TrafficLogRepositorySQLite : ITrafficLogRepository
         var trafficLogSQLite = trafficLog.MapToSQLite();
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new SQLiteCommand("UPDATE TrafficLogs " +
+        await using var command = new SqliteCommand("UPDATE TrafficLogs " +
                                                     $"SET Mode = '{trafficLogSQLite.Mode}', " +
                                                     $"TimeStamp = '{trafficLogSQLite.TimeStamp.ToDatabaseFormat()}'" +
                                                     $"WHERE Id = {trafficLogSQLite.Id};", connection);
@@ -140,7 +140,7 @@ public class TrafficLogRepositorySQLite : ITrafficLogRepository
 
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new SQLiteCommand("DELETE FROM TrafficLogs " +
+        await using var command = new SqliteCommand("DELETE FROM TrafficLogs " +
                                                     $"WHERE Id = {id};", connection);
 
         var result = await command.ExecuteNonQueryAsync();
@@ -158,7 +158,7 @@ public class TrafficLogRepositorySQLite : ITrafficLogRepository
 
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new SQLiteCommand("DELETE FROM TrafficLogs " +
+        await using var command = new SqliteCommand("DELETE FROM TrafficLogs " +
                                                     $"WHERE TimeStamp >= '{fromDate.ToDatabaseFormat()}' " +
                                                     $"AND TimeStamp <= '{toDate.ToDatabaseFormat()}' ", connection);
 
@@ -172,7 +172,7 @@ public class TrafficLogRepositorySQLite : ITrafficLogRepository
     {
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new SQLiteCommand("DELETE FROM TrafficLogs;", connection);
+        await using var command = new SqliteCommand("DELETE FROM TrafficLogs;", connection);
 
         var result = await command.ExecuteNonQueryAsync();
         await connection.CloseAsync();

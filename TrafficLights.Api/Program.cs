@@ -1,4 +1,3 @@
-using System.Data.SQLite;
 using System.Text.Json;
 using Serilog;
 using Serilog.Events;
@@ -30,7 +29,7 @@ switch (apiConfiguration!.Repository!.Type)
 {
     case "SQLite":
         if (!File.Exists(apiConfiguration.Repository!.SQLite!.Url))
-            SQLiteConnection.CreateFile(apiConfiguration.Repository!.SQLite!.Url);
+            File.Create(apiConfiguration.Repository!.SQLite!.Url!).Close();
 
         loggerConfiguration.WriteTo.SQLite(
             sqliteDbPath: apiConfiguration.Repository.SQLite!.Url,

@@ -1,5 +1,4 @@
-﻿using System.Data.SQLite;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -38,8 +37,8 @@ switch (consoleConfiguration.Repository!.Type)
 {
     case "SQLite":
         if (!File.Exists(consoleConfiguration.Repository!.SQLite!.Url))
-            SQLiteConnection.CreateFile(consoleConfiguration.Repository!.SQLite!.Url);
-        
+            File.Create(consoleConfiguration.Repository!.SQLite!.Url!).Close();
+
         loggerConfiguration.WriteTo.SQLite(
             sqliteDbPath: consoleConfiguration.Repository.SQLite!.Url,
             tableName: "ConsoleLogs",

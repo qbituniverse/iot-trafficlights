@@ -18,7 +18,7 @@
     <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Serilog.Sinks.MongoDB" Version="5.4.1" />
     <PackageReference Include="Serilog.Sinks.MySQL" Version="5.0.0" />
-    <PackageReference Include="Serilog.Sinks.SQLite" Version="6.0.0" />
+    <PackageReference Include="Serilog.Sinks.SQLite.Microsoft" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>

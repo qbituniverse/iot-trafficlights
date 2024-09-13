@@ -1,4 +1,3 @@
-using System.Data.SQLite;
 using Serilog;
 using MongoDB.Bson;
 using TrafficLights.Web;
@@ -31,7 +30,7 @@ switch (webConfiguration!.Repository!.Type)
 {
     case "SQLite":
         if (!File.Exists(webConfiguration.Repository!.SQLite!.Url))
-            SQLiteConnection.CreateFile(webConfiguration.Repository!.SQLite!.Url);
+            File.Create(webConfiguration.Repository!.SQLite!.Url!).Close();
 
         loggerConfiguration.WriteTo.SQLite(
             sqliteDbPath: webConfiguration.Repository.SQLite!.Url,
