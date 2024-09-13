@@ -4,8 +4,9 @@ docker network create iot-trafficlights
 
 # Database
 $DB_DIR=""
+export DB_DIR=""
 
-docker run -name iot-trafficlights-sqlitebrowser --security-opt seccomp=unconfined -e PUID=1000 -e PGID=1000 -e TZ=Europe/Warsaw -p 3000:3000 -p 3001:3001 -v ${DB_DIR}:/data/db --restart unless-stopped lscr.io/linuxserver/sqlitebrowser:latest
+docker run -d --name iot-trafficlights-sqlitebrowser --security-opt seccomp=unconfined -e PUID=1000 -e PGID=1000 -e TZ=Europe/Warsaw -p 3000:3000 -p 3001:3001 -v ${DB_DIR}:/data/db --restart unless-stopped lscr.io/linuxserver/sqlitebrowser:latest
 docker logs iot-trafficlights-sqlitebrowser
 
 # Browse
