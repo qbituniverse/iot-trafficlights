@@ -71,7 +71,7 @@ services:
       - ConsoleConfiguration__Modules__TrafficControl__Type=Pi
 #      - ConsoleConfiguration__Modules__TrafficControl__Api__Url=http://iot-trafficlights-api
       - ConsoleConfiguration__Modules__TrafficSensor__Type=Pi
-      - ConsoleConfiguration__Run=RunTrafficTimer
+      - ConsoleConfiguration__Run=RunTrafficSensor
     volumes:
       - ${DB_DIR}:/data/db
     tty: true
