@@ -1,17 +1,17 @@
 ### Debug on Pi ###
 # Setup Folders
-sudo mkdir -p /home/iot/code/TrafficLights/TrafficLights.Api
-sudo chmod 777 /home/iot/code/TrafficLights/TrafficLights.Api
+sudo mkdir -p /home/iot/code/TrafficLights/IoT.TrafficLights.Api
+sudo chmod 777 /home/iot/code/TrafficLights/IoT.TrafficLights.Api
 sudo chmod 777 /home/iot/code/TrafficLights
 
 # Compile and Copy
 # Use local Visual Studio Publish Profile
 
 # Run
-cd /home/iot/code/TrafficLights/TrafficLights.Api
+cd /home/iot/code/TrafficLights/IoT.TrafficLights.Api
 export ASPNETCORE_ENVIRONMENT=Test
-#dotnet TrafficLights.Api.dll --no-launch-profile
-dotnet TrafficLights.Api.dll --launch-profile "Api-Test"
+#dotnet IoT.TrafficLights.Api.dll --no-launch-profile
+dotnet IoT.TrafficLights.Api.dll --launch-profile "Api-Test"
 
 # Test
 curl -X GET "http://localhost:5000/api/admin/config"
@@ -21,7 +21,7 @@ curl -X POST "http://localhost:5000/api/trafficcontrol/standby"
 curl -X POST "http://localhost:5000/api/trafficcontrol/shut"
 
 # Clean-up
-sudo rm -rf /home/iot/code/TrafficLights/TrafficLights.Api
+sudo rm -rf /home/iot/code/TrafficLights/IoT.TrafficLights.Api
 
 
 

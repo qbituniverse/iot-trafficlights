@@ -1,20 +1,20 @@
 ### Debug on Pi ###
 # Setup Folders
-sudo mkdir -p /home/iot/code/TrafficLights/TrafficLights.Web
-sudo chmod 777 /home/iot/code/TrafficLights/TrafficLights.Web
+sudo mkdir -p /home/iot/code/TrafficLights/IoT.TrafficLights.Web
+sudo chmod 777 /home/iot/code/TrafficLights/IoT.TrafficLights.Web
 sudo chmod 777 /home/iot/code/TrafficLights
 
 # Compile and Copy
 # Use local Visual Studio Publish Profile
 
 # Run
-cd /home/iot/code/TrafficLights/TrafficLights.Web
+cd /home/iot/code/TrafficLights/IoT.TrafficLights.Web
 export ASPNETCORE_ENVIRONMENT=Test
-#dotnet TrafficLights.Web.dll --no-launch-profile
-dotnet TrafficLights.Web.dll --launch-profile "Web-Test"
+#dotnet IoT.TrafficLights.Web.dll --no-launch-profile
+dotnet IoT.TrafficLights.Web.dll --launch-profile "Web-Test"
 
 # Clean-up
-sudo rm -rf /home/iot/code/TrafficLights/TrafficLights.Web
+sudo rm -rf /home/iot/code/TrafficLights/IoT.TrafficLights.Web
 
 
 

@@ -1,14 +1,14 @@
-# Traffic Lights
+# IoT Traffic Lights
 
 Traffic Lights solution to control traffic lights, setup on the Raspberry Pi GPIO board.
 
 ## Application Design
 
-![Traffic Lights Application](/.docs/TrafficLights.Application.png)
+![IoT Traffic Lights Application](/.docs/IoT.TrafficLights.Application.png)
 
 ## Raspberry Pi Breadboard Wiring
 
-![Traffic Lights Breadboard](/.docs/TrafficLights.Breadboard.png)
+![IoT Traffic Lights Breadboard](/.docs/IoT.TrafficLights.Breadboard.png)
 
 ## Modules
 
@@ -61,7 +61,7 @@ Backend database details, used across all projects in the TrafficLights solution
 
 |Name|Description|
 |-----|-----|
-|[TrafficLights.Domain](/.docs/TrafficLights.Domain.md)|Domain project containing reusable models, modules and data repositories.|
-|[TrafficLights.Api](/.docs/TrafficLights.Api.md)|Api (REST) project used to control the traffic lights module and access traffic lights execution logs.|
-|[TrafficLights.Web](/.docs/TrafficLights.Web.md)|Web app project used to control the traffic lights module from a Razor UI HTTP web app client.|
-|[TrafficLights.Console](/.docs/TrafficLights.Console.md)|Console app used to run traffic lights module or traffic sensor module.|
+|[IoT.TrafficLights.Domain](/.docs/IoT.TrafficLights.Domain.md)|Domain project containing reusable models, modules and data repositories.|
+|[IoT.TrafficLights.Api](/.docs/IoT.TrafficLights.Api.md)|Api (REST) project used to control the traffic lights module and access traffic lights execution logs.|
+|[IoT.TrafficLights.Web](/.docs/IoT.TrafficLights.Web.md)|Web app project used to control the traffic lights module from a Razor UI HTTP web app client.|
+|[IoT.TrafficLights.Console](/.docs/IoT.TrafficLights.Console.md)|Console app used to run traffic lights module or traffic sensor module.|

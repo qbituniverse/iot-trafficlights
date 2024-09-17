@@ -1,0 +1,90 @@
+services:
+  db:
+    image: mongo:latest
+    restart: always
+    container_name: iot-trafficlights-mongodb
+    environment:
+      - TZ=Europe/Warsaw
+    volumes:
+      - ${DB_DIR}:/data/db
+    ports:
+      - 27018:27017
+    tty: true
+    privileged: true
+    networks:
+      - iot-trafficlights
+  
+  api:
+    image: qbituniverse/iot-trafficlights-api:latest
+    restart: always
+    container_name: iot-trafficlights-api
+    environment:
+      - TZ=Europe/Warsaw
+      - ApiConfiguration__Environment=Development
+      - ApiConfiguration__LogLevel__Console=Information
+      - ApiConfiguration__LogLevel__Database=Error
+      - ApiConfiguration__Repository__Type=MongoDb
+      - ApiConfiguration__Repository__MongoDb__Url=Server=mongodb://localhost:27017
+      - ApiConfiguration__Modules__TrafficControl__Type=Mock
+    ports:
+      - 8100:8080
+    tty: true
+    privileged: true
+    networks:
+      - iot-trafficlights
+
+  web:
+    image: qbituniverse/iot-trafficlights-web:latest
+    restart: always
+    container_name: iot-trafficlights-web
+    environment:
+      - TZ=Europe/Warsaw
+      - WebConfiguration__Environment=Development
+      - WebConfiguration__LogLevel__Console=Information
+      - WebConfiguration__LogLevel__Database=Error
+      - WebConfiguration__Repository__Type=MongoDb
+      - WebConfiguration__Repository__MongoDb__Url=Server=mongodb://localhost:27017
+      - WebConfiguration__Api__Url=http://iot-trafficlights-api
+    ports:
+      - 8110:8080
+    tty: true
+    privileged: true
+    networks:
+      - iot-trafficlights
+
+  console:
+    image: qbituniverse/iot-trafficlights-console:latest
+    restart: always
+    container_name: iot-trafficlights-console
+    environment:
+      - TZ=Europe/Warsaw
+      - ConsoleConfiguration__Environment=Development
+      - ConsoleConfiguration__LogLevel__Console=Information
+      - ConsoleConfiguration__LogLevel__Database=Error
+      - ConsoleConfiguration__Repository__Type=MongoDb
+      - ConsoleConfiguration__Repository__MongoDb__Url=Server=mongodb://localhost:27017
+      - ConsoleConfiguration__Modules__TrafficControl__Type=Mock
+      - ConsoleConfiguration__Modules__TrafficSensor__Type=Mock
+      - ConsoleConfiguration__Run=RunTrafficSensor
+    tty: true
+    privileged: true
+    networks:
+      - iot-trafficlights
+
+  mongoexpress:
+    image: mongo-express:latest
+    restart: always
+    container_name: iot-trafficlights-mongoexpress
+    environment:
+      - TZ=Europe/Warsaw
+      - ME_CONFIG_MONGODB_SERVER=iot-trafficlights-mongodb
+    ports:
+      - 8181:8081
+    tty: true
+    privileged: true
+    networks:
+      - iot-trafficlights
+
+networks:
+  iot-trafficlights:
+    driver: bridge
