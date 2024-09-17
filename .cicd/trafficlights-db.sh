@@ -64,7 +64,7 @@ docker network remove mongo-iot-trafficlights
 
 
 ### Mongo Express ###
-docker run --name iot-trafficlights-mongoexpress --network compose_iot-trafficlights -e ME_CONFIG_MONGODB_SERVER=iot-trafficlights-mongodb -e TZ=Europe/Warsaw -d -p 8081:8081 mongo-express:latest
+docker run --name iot-trafficlights-mongoexpress --network compose_iot-trafficlights -e ME_CONFIG_MONGODB_SERVER=iot-trafficlights-mongodb -e TZ=Europe/Warsaw -d -p 8181:8081 mongo-express:latest
 docker logs iot-trafficlights-mongoexpress
 
 # admin:pass

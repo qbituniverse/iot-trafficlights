@@ -3,8 +3,8 @@ $env:DB_PWD=""
 $env:DB_DIR=""
 
 docker compose version
-docker compose -f .cicd/compose/docker-compose.DockerHub-amd64.yaml up -d
-docker compose -f .cicd/compose/docker-compose.DockerHub-amd64.yaml down
+docker compose -f .cicd/compose/docker-compose.sqlite.yaml up -d
+docker compose -f .cicd/compose/docker-compose.sqlite.yaml down
 
 
 
@@ -22,8 +22,8 @@ export DB_PWD=""
 export DB_DIR=""
 
 sudo docker compose version
-sudo docker compose -f docker-compose.DockerHub-arm64.yaml up -d
-sudo docker compose -f docker-compose.DockerHub-arm64.yaml down
+sudo docker compose -f .cicd/compose/docker-compose.sqlite.yaml up -d
+sudo docker compose -f .cicd/compose/docker-compose.sqlite.yaml down
 
 # Clean-up
 sudo rm -rf /home/iot/code/TrafficLights

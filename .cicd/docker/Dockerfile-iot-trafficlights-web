@@ -8,18 +8,18 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["TrafficLights.Web/TrafficLights.Web.csproj", "TrafficLights.Web/"]
-RUN dotnet restore "TrafficLights.Web/TrafficLights.Web.csproj"
+COPY ["IoT.TrafficLights.Web/IoT.TrafficLights.Web.csproj", "IoT.TrafficLights.Web/"]
+RUN dotnet restore "IoT.TrafficLights.Web/IoT.TrafficLights.Web.csproj"
 
 COPY . .
-WORKDIR "/src/TrafficLights.Web"
-RUN dotnet build "TrafficLights.Web.csproj" -c Release -o /app/build
+WORKDIR "/src/IoT.TrafficLights.Web"
+RUN dotnet build "IoT.TrafficLights.Web.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "TrafficLights.Web.csproj" -c Release -o /app/publish
+RUN dotnet publish "IoT.TrafficLights.Web.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-ENTRYPOINT ["dotnet", "TrafficLights.Web.dll"]
+ENTRYPOINT ["dotnet", "IoT.TrafficLights.Web.dll"]
