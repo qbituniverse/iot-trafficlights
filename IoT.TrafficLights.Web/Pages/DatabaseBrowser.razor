@@ -1,0 +1,41 @@
+﻿@page "/database-browser"
+@using IoT.TrafficLights.Web.Models
+
+<PageTitle>Database Browser</PageTitle>
+
+@inject IJSRuntime JsRuntime
+@inject WebConfiguration WebConfiguration
+
+<h3>Database Browser</h3>
+
+<div class="my-3">
+    <button class="btn btn-primary w-100" @onclick="LaunchDatabaseBrowser">Launch Database Browser</button>
+</div>
+
+@code {
+    protected async void LaunchDatabaseBrowser(EventArgs args)
+    {
+        var url = string.Empty;
+        switch (WebConfiguration.Repository!.Type)
+        {
+            case "SQLite":
+                url = await JsRuntime.InvokeAsync<string>("prompt", "SQLite Browser URL:", "http://localhost:3000");
+                break;
+
+            case "MySql":
+                await JsRuntime.InvokeAsync<string>("alert", "Use MySql Workbench Client");
+                break;
+
+            case "MongoDb":
+                url = await JsRuntime.InvokeAsync<string>("prompt", "MongoDb Browser URL:", "http://localhost:8181");
+                break;
+            
+            default:
+                await JsRuntime.InvokeAsync<string>("alert", "No database detected!!!");
+                break;
+        }
+
+        if (!string.IsNullOrEmpty(url))
+            await JsRuntime.InvokeVoidAsync("open", url, "_blank");
+    }
+}

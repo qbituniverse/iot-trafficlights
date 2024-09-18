@@ -35,6 +35,7 @@ internal class Register
         services.AddHttpClient("TrafficLightsApi",
             httpClient => { httpClient.BaseAddress = new Uri(configuration.Api!.Url!); });
 
+        services.AddSingleton<IAdminService, AdminService>();
         services.AddSingleton<ITrafficControlService, TrafficControlService>();
         services.AddSingleton<ITrafficLogService, TrafficLogService>();
     }
