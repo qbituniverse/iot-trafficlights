@@ -22,6 +22,7 @@ services:
     container_name: iot-trafficlights-api
     environment:
       - TZ=Europe/Warsaw
+      - ASPNETCORE_ENVIRONMENT=Development
       - ApiConfiguration__Environment=Development
       - ApiConfiguration__LogLevel__Console=Information
       - ApiConfiguration__LogLevel__Database=Error
@@ -41,12 +42,13 @@ services:
     container_name: iot-trafficlights-web
     environment:
       - TZ=Europe/Warsaw
+      - ASPNETCORE_ENVIRONMENT=Development
       - WebConfiguration__Environment=Development
       - WebConfiguration__LogLevel__Console=Information
       - WebConfiguration__LogLevel__Database=Error
       - WebConfiguration__Repository__Type=MySql
       - WebConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=TrafficLights
-      - WebConfiguration__Api__Url=http://iot-trafficlights-api
+      - WebConfiguration__Api__Url=http://iot-trafficlights-api:8080
     ports:
       - 8110:8080
     tty: true
@@ -60,6 +62,7 @@ services:
     container_name: iot-trafficlights-console
     environment:
       - TZ=Europe/Warsaw
+      - ASPNETCORE_ENVIRONMENT=Development
       - ConsoleConfiguration__Environment=Development
       - ConsoleConfiguration__LogLevel__Console=Information
       - ConsoleConfiguration__LogLevel__Database=Error
