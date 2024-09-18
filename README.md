@@ -22,7 +22,7 @@ Use to control the traffic and pedestrian lights pattern, turning different ligh
 |-----|-----|
 |Mock|Module is controlled through mock calls, no Pi required.|
 |Pi|Module is executing GPIO commands on the Pi. Raspberry Pi is required for this.|
-|Api|Module calls through HTTP layer to the _TrafficLights.Api_.<br />Refer to _TrafficLights.Api_ configuration and ports below.<br />Sample URL: _http://localhost:5010_|
+|Api|Module calls through HTTP layer to the _IoT.TrafficLights.Api_.<br />Refer to _IoT.TrafficLights.Api_ configuration and ports below.<br />Sample URL: _http://localhost:5010_|
 
 ### TrafficSensor
 
@@ -35,11 +35,11 @@ Use to control the motion detection sensor, turning on or off sensor mode. Confi
 
 ## Repository
 
-Backend database details, used across all projects in the TrafficLights solution.
+Backend database details, used across all projects in the IoT TrafficLights solution.
 
 |Object|Name|Description|
 |-----|-----|-----|
-|**Database**|TrafficLights|Main database name for the TrafficLights solution.|
+|**Database**|TrafficLights|Main database name for the IoT TrafficLights solution.|
 |**Tables**|ApiLogs|Store the API execution logs.|
 ||WebLogs|Store the Web App execution logs.|
 ||ConsoleLogs|Store the Console execution logs.|

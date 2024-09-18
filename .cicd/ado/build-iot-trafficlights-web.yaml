@@ -6,8 +6,8 @@ trigger:
     include:
     - .cicd/docker/Dockerfile-iot-trafficlights-web
     - .cicd/ado/build-iot-trafficlights-web.yaml
-    - TrafficLights.Web
-    - TrafficLights.Domain
+    - IoT.TrafficLights.Web
+    - IoT.TrafficLights.Domain
 
 pr: none
 
@@ -20,7 +20,7 @@ resources:
 
 stages:
 - stage: DockerBuild
-  displayName: 'Build Multi-Arch Docker Images for TrafficLights Web'
+  displayName: 'Build Multi-Arch Docker Images for IoT TrafficLights Web'
   pool:
     name: self-hosted-ado-agents
     demands:
@@ -33,7 +33,7 @@ stages:
     imageArchitecture: linux/amd64,linux/arm64
   jobs:
   - job: DockerBuild
-    displayName: 'Build Multi-Arch Docker Images for TrafficLights Web'
+    displayName: 'Build Multi-Arch Docker Images for IoT TrafficLights Web'
     timeoutInMinutes: 0
     steps:
     - template: azure-devops/builds/assign-build-number.yaml@platform-ops
