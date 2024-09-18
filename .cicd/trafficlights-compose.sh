@@ -10,12 +10,19 @@ docker compose -f .cicd/compose/docker-compose.sqlite.yaml down
 
 ### Arm 64 ###
 # Setup Folders
+# Code
 sudo mkdir -p /home/iot/code/TrafficLights
+sudo chmod 777 /home/iot/code/TrafficLights
+# Data
 sudo mkdir -p /home/iot/data/TrafficLights
 sudo mkdir -p /home/iot/data/TrafficLights/SQLite
-sudo chmod 777 /home/iot/code/TrafficLights
+sudo mkdir -p /home/iot/data/TrafficLights/MySql
+sudo mkdir -p /home/iot/data/TrafficLights/MongoDb
 sudo chmod 777 /home/iot/data/TrafficLights
 sudo chmod 777 /home/iot/data/TrafficLights/SQLite
+sudo chmod 777 /home/iot/data/TrafficLights/MySql
+sudo chmod 777 /home/iot/data/TrafficLights/MongoDb
+
 cd /home/iot/code/TrafficLights
 
 export DB_PWD=""
@@ -29,3 +36,5 @@ sudo docker compose -f .cicd/compose/docker-compose.sqlite.yaml down
 sudo rm -rf /home/iot/code/TrafficLights
 sudo rm -rf /home/iot/data/TrafficLights
 sudo rm -rf /home/iot/data/TrafficLights/SQLite
+sudo rm -rf /home/iot/data/TrafficLights/MySql
+sudo rm -rf /home/iot/data/TrafficLights/MongoDb

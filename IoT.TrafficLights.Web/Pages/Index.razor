@@ -1,7 +1,40 @@
 ﻿@page "/"
+@using IoT.TrafficLights.Web.Services
+@using IoT.TrafficLights.Web.Models
+@using System.Text.Json
 
-<PageTitle>Traffic Lights</PageTitle>
+<PageTitle>IoT Traffic Lights</PageTitle>
 
-<h3>Traffic Lights</h3>
+@inject IAdminService AdminService
+@inject WebConfiguration WebConfiguration
 
-<p>Welcome to your new app.</p>
+<h3>IoT Traffic Lights</h3>
+
+<div class="my-3">
+    <h4>Web Configuration</h4>
+    <pre>@JsonSerializer.Serialize(WebConfiguration, new JsonSerializerOptions { WriteIndented = true })</pre>
+</div>
+
+<div class="my-3">
+    <h4>Api Connectivity</h4>
+    <p>@_apiPing</p>
+</div>
+
+<div class="my-3">
+    <h4>Api Configuration</h4>
+    <pre>@JsonSerializer.Serialize(_apiConfiguration, new JsonSerializerOptions { WriteIndented = true })</pre>
+</div>
+
+@code {
+    private string? _apiPing;
+
+    private object? _apiConfiguration;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var apiPing = await AdminService.Ping();
+        _apiPing = apiPing ? "Connected" : "Not Connected!!!";
+        var apiConfiguration = await AdminService.Config();
+        _apiConfiguration = JsonSerializer.Deserialize<object>(apiConfiguration!, new JsonSerializerOptions { WriteIndented = true });
+    }
+}

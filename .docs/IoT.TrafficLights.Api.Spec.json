@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "TrafficLights.Api",
+    "title": "IoT.TrafficLights.Api",
     "version": "1.0"
   },
   "paths": {
