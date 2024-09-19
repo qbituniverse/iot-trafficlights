@@ -10,7 +10,7 @@ services:
     volumes:
       - ${DB_DIR}:/var/lib/mysql
     ports:
-      - 3307:3306
+      - 3319:3306
     tty: true
     privileged: true
     networks:
@@ -30,7 +30,7 @@ services:
       - ApiConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=TrafficLights
       - ApiConfiguration__Modules__TrafficControl__Type=Mock
     ports:
-      - 8100:8080
+      - 8010:8080
     tty: true
     privileged: true
     networks:
@@ -50,7 +50,7 @@ services:
       - WebConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=TrafficLights
       - WebConfiguration__Api__Url=http://iot-trafficlights-api:8080
     ports:
-      - 8110:8080
+      - 8015:8080
     tty: true
     privileged: true
     networks:

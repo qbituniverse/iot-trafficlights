@@ -8,7 +8,7 @@ services:
     volumes:
       - ${DB_DIR}:/data/db
     ports:
-      - 27018:27017
+      - 27019:27017
     tty: true
     privileged: true
     networks:
@@ -28,7 +28,7 @@ services:
       - ApiConfiguration__Repository__MongoDb__Url=Server=mongodb://localhost:27017
       - ApiConfiguration__Modules__TrafficControl__Type=Mock
     ports:
-      - 8100:8080
+      - 8010:8080
     tty: true
     privileged: true
     networks:
@@ -48,7 +48,7 @@ services:
       - WebConfiguration__Repository__MongoDb__Url=Server=mongodb://localhost:27017
       - WebConfiguration__Api__Url=http://iot-trafficlights-api:8080
     ports:
-      - 8110:8080
+      - 8015:8080
     tty: true
     privileged: true
     networks:
@@ -82,7 +82,7 @@ services:
       - TZ=Europe/Warsaw
       - ME_CONFIG_MONGODB_SERVER=iot-trafficlights-mongodb
     ports:
-      - 8181:8081
+      - 8019:8081
     tty: true
     privileged: true
     networks:
