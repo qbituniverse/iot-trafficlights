@@ -10,7 +10,7 @@ public class TrafficLogRepositoryMongoDb : ITrafficLogRepository
     public TrafficLogRepositoryMongoDb(string? connectionString)
     {
         var client = new MongoClient(connectionString);
-        var database = client.GetDatabase("TrafficLights");
+        var database = client.GetDatabase("IoT-TrafficLights");
         _collection = database.GetCollection<TrafficLogMongoDb>("TrafficLogs");
     }
 

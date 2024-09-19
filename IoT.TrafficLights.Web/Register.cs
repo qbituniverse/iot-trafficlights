@@ -10,6 +10,7 @@ internal class Register
     {
         services.AddRazorPages();
         services.AddServerSideBlazor();
+        services.AddHealthChecks();
 
         switch (configuration.Repository!.Type)
         {

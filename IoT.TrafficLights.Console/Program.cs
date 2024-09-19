@@ -54,7 +54,7 @@ switch (consoleConfiguration.Repository!.Type)
 
     case "MongoDb":
         loggerConfiguration.WriteTo.MongoDBBson(
-            databaseUrl: $"{consoleConfiguration.Repository.MongoDb!.Url}/TrafficLights",
+            databaseUrl: $"{consoleConfiguration.Repository.MongoDb!.Url}/IoT-TrafficLights",
             collectionName: "ConsoleLogs",
             restrictedToMinimumLevel: Enum.Parse<LogEventLevel>(consoleConfiguration.LogLevel!.Database!));
         break;

@@ -46,7 +46,7 @@ switch (apiConfiguration.Repository!.Type)
         
     case "MongoDb":
         loggerConfiguration.WriteTo.MongoDBBson(
-            databaseUrl: $"{apiConfiguration.Repository.MongoDb!.Url}/TrafficLights",
+            databaseUrl: $"{apiConfiguration.Repository.MongoDb!.Url}/IoT-TrafficLights",
             collectionName: "ApiLogs",
             restrictedToMinimumLevel: Enum.Parse<LogEventLevel>(apiConfiguration.LogLevel!.Database!));
         break;
@@ -65,6 +65,7 @@ app.Logger.LogInformation(@"IoT.TrafficLights.Api Configuration {Config}",
 app.UseExceptionHandler("/error");
 
 app.MapControllers();
+app.MapHealthChecks("/healthz");
 
 if (app.Environment.IsDevelopment())
 {
