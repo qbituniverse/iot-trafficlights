@@ -15,12 +15,12 @@ Web app project used to control the traffic lights module from a Razor UI HTTP w
 
 |Host|Environment|Port|
 |-----|-----|-----|
-|**Localhost**|Development|5110|
-||Test|5111|
-||Production|5112|
-|**Docker**|Development|8110|
-||Test|8111|
-||Production|8112|
+|**Localhost**|Development|5015|
+||Test|5016|
+||Production|5017|
+|**Docker**|Development|8015|
+||Test|8016|
+||Production|8017|
 
 ## Configuration
 
@@ -91,14 +91,14 @@ Web app project used to control the traffic lights module from a Razor UI HTTP w
         "Url": "PATH_TO_DATABASE\\DATABASE_NAME"
       },
       "MySql": {
-        "Url": "Server=127.0.0.1;Port=3306;User ID=root;Password=YOUR_PASSWORD;Database=DATABASE_NAME"
+        "Url": "Server=127.0.0.1;Port=3319;User ID=root;Password=YOUR_PASSWORD;Database=DATABASE_NAME"
       },
       "MongoDb": {
-        "Url": "mongodb://localhost:27017"
+        "Url": "mongodb://localhost:27019"
       }
     },
     "Api": {
-      "Url": "http://localhost:5100"
+      "Url": "http://localhost:5010"
     }
   }
 }

@@ -27,12 +27,12 @@ For a complete OpenAPI specification please refer to [IoT.TrafficLights.Api.Spec
 
 |Host|Environment|Port|
 |-----|-----|-----|
-|**Localhost**|Development|5100|
-||Test|5101|
-||Production|5102|
-|**Docker**|Development|8100|
-||Test|8101|
-||Production|8102|
+|**Localhost**|Development|5010|
+||Test|5011|
+||Production|5012|
+|**Docker**|Development|8010|
+||Test|8011|
+||Production|8012|
 
 ## Configuration
 
@@ -107,10 +107,10 @@ For a complete OpenAPI specification please refer to [IoT.TrafficLights.Api.Spec
         "Url": "PATH_TO_DATABASE\\DATABASE_NAME"
       },
       "MySql": {
-        "Url": "Server=127.0.0.1;Port=3306;User ID=root;Password=YOUR_PASSWORD;Database=DATABASE_NAME"
+        "Url": "Server=127.0.0.1;Port=3319;User ID=root;Password=YOUR_PASSWORD;Database=DATABASE_NAME"
       },
       "MongoDb": {
-        "Url": "mongodb://localhost:27017"
+        "Url": "mongodb://localhost:27019"
       }
     },
     "Modules": {

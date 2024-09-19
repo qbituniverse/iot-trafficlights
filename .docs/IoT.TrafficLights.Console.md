@@ -86,10 +86,10 @@ Console app used to run traffic lights module or traffic sensor module.
         "Url": "PATH_TO_DATABASE\\DATABASE_NAME"
       },
       "MySql": {
-        "Url": "Server=127.0.0.1;Port=3306;User ID=root;Password=YOUR_PASSWORD;Database=DATABASE_NAME"
+        "Url": "Server=127.0.0.1;Port=3319;User ID=root;Password=YOUR_PASSWORD;Database=DATABASE_NAME"
       },
       "MongoDb": {
-        "Url": "mongodb://localhost:27017"
+        "Url": "mongodb://localhost:27019"
       }
     },
     "Modules": {

@@ -15,7 +15,7 @@ services:
     volumes:
       - ${DB_DIR}:/data/db
     ports:
-      - 8100:8080
+      - 8010:8080
     tty: true
     privileged: true
     networks:
@@ -37,7 +37,7 @@ services:
     volumes:
       - ${DB_DIR}:/data/db
     ports:
-      - 8110:8080
+      - 8015:8080
     tty: true
     privileged: true
     networks:
@@ -60,6 +60,25 @@ services:
       - ConsoleConfiguration__Run=RunTrafficSensor
     volumes:
       - ${DB_DIR}:/data/db
+    tty: true
+    privileged: true
+    networks:
+      - iot-trafficlights
+
+  sqlitebrowser:
+    image: lscr.io/linuxserver/sqlitebrowser:latest
+    restart: always
+    container_name: iot-trafficlights-sqlitebrowser
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - TZ=Europe/Warsaw
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - ${DB_DIR}:/data/db
+    ports:
+      - 3019:3000
     tty: true
     privileged: true
     networks:
