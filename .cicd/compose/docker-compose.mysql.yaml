@@ -1,24 +1,32 @@
 services:
   db:
-    image: mysql:latest
     restart: always
+    image: mysql:latest
     container_name: iot-trafficlights-mysql
     environment:
       - TZ=Europe/Warsaw
       - MYSQL_ROOT_PASSWORD=${DB_PWD}
-      - MYSQL_DATABASE=TrafficLights
+      - MYSQL_DATABASE=IoT-TrafficLights
     volumes:
       - ${DB_DIR}:/var/lib/mysql
     ports:
       - 3319:3306
+    healthcheck:
+      test: mysqladmin ping -h localhost
+      interval: 30s
+      timeout: 30s
+      retries: 10
     tty: true
     privileged: true
     networks:
       - iot-trafficlights
   
   api:
-    image: qbituniverse/iot-trafficlights-api:latest
+    depends_on:
+      db:
+        condition: service_healthy
     restart: always
+    image: qbituniverse/iot-trafficlights-api:latest
     container_name: iot-trafficlights-api
     environment:
       - TZ=Europe/Warsaw
@@ -27,18 +35,26 @@ services:
       - ApiConfiguration__LogLevel__Console=Information
       - ApiConfiguration__LogLevel__Database=Error
       - ApiConfiguration__Repository__Type=MySql
-      - ApiConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=TrafficLights
+      - ApiConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IoT-TrafficLights
       - ApiConfiguration__Modules__TrafficControl__Type=Mock
     ports:
       - 8010:8080
+    healthcheck:
+      test: curl --fail http://localhost:8080/healthz || exit 1
+      interval: 30s
+      timeout: 30s
+      retries: 10
     tty: true
     privileged: true
     networks:
       - iot-trafficlights
 
   web:
-    image: qbituniverse/iot-trafficlights-web:latest
+    depends_on:
+      api:
+        condition: service_healthy
     restart: always
+    image: qbituniverse/iot-trafficlights-web:latest
     container_name: iot-trafficlights-web
     environment:
       - TZ=Europe/Warsaw
@@ -47,18 +63,26 @@ services:
       - WebConfiguration__LogLevel__Console=Information
       - WebConfiguration__LogLevel__Database=Error
       - WebConfiguration__Repository__Type=MySql
-      - WebConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=TrafficLights
+      - WebConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IoT-TrafficLights
       - WebConfiguration__Api__Url=http://iot-trafficlights-api:8080
     ports:
       - 8015:8080
+    healthcheck:
+      test: curl --fail http://localhost:8080/healthz || exit 1
+      interval: 30s
+      timeout: 30s
+      retries: 10
     tty: true
     privileged: true
     networks:
       - iot-trafficlights
 
   console:
-    image: qbituniverse/iot-trafficlights-console:latest
+    depends_on:
+      web:
+        condition: service_healthy
     restart: always
+    image: qbituniverse/iot-trafficlights-console:latest
     container_name: iot-trafficlights-console
     environment:
       - TZ=Europe/Warsaw
@@ -67,7 +91,7 @@ services:
       - ConsoleConfiguration__LogLevel__Console=Information
       - ConsoleConfiguration__LogLevel__Database=Error
       - ConsoleConfiguration__Repository__Type=MySql
-      - ConsoleConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=TrafficLights
+      - ConsoleConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IoT-TrafficLights
       - ConsoleConfiguration__Modules__TrafficControl__Type=Mock
       - ConsoleConfiguration__Modules__TrafficSensor__Type=Mock
       - ConsoleConfiguration__Run=RunTrafficSensor

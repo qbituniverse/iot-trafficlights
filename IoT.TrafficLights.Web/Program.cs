@@ -47,7 +47,7 @@ switch (webConfiguration.Repository!.Type)
 
     case "MongoDb":
         loggerConfiguration.WriteTo.MongoDBBson(
-            databaseUrl: $"{webConfiguration.Repository.MongoDb!.Url}/TrafficLights",
+            databaseUrl: $"{webConfiguration.Repository.MongoDb!.Url}/IoT-TrafficLights",
             collectionName: "WebLogs",
             restrictedToMinimumLevel: Enum.Parse<LogEventLevel>(webConfiguration.LogLevel!.Database!));
         break;
@@ -73,5 +73,6 @@ app.UseRouting();
 app.MapBlazorHub();
 
 app.MapFallbackToPage("/_Host");
+app.MapHealthChecks("/healthz");
 
 app.Run();

@@ -1,7 +1,7 @@
 services:
   api:
-    image: qbituniverse/iot-trafficlights-api:latest
     restart: always
+    image: qbituniverse/iot-trafficlights-api:latest
     container_name: iot-trafficlights-api
     environment:
       - TZ=Europe/Warsaw
@@ -10,20 +10,28 @@ services:
       - ApiConfiguration__LogLevel__Console=Information
       - ApiConfiguration__LogLevel__Database=Error
       - ApiConfiguration__Repository__Type=SQLite
-      - ApiConfiguration__Repository__SQLite__Url=/data/db/TrafficLights.db
+      - ApiConfiguration__Repository__SQLite__Url=/data/db/IoT-TrafficLights.db
       - ApiConfiguration__Modules__TrafficControl__Type=Mock
     volumes:
       - ${DB_DIR}:/data/db
     ports:
       - 8010:8080
+    healthcheck:
+      test: curl --fail http://localhost:8080/healthz || exit 1
+      interval: 30s
+      timeout: 30s
+      retries: 10
     tty: true
     privileged: true
     networks:
       - iot-trafficlights
 
   web:
-    image: qbituniverse/iot-trafficlights-web:latest
+    depends_on:
+      api:
+        condition: service_healthy
     restart: always
+    image: qbituniverse/iot-trafficlights-web:latest
     container_name: iot-trafficlights-web
     environment:
       - TZ=Europe/Warsaw
@@ -32,20 +40,28 @@ services:
       - WebConfiguration__LogLevel__Console=Information
       - WebConfiguration__LogLevel__Database=Error
       - WebConfiguration__Repository__Type=SQLite
-      - WebConfiguration__Repository__SQLite__Url=/data/db/TrafficLights.db
+      - WebConfiguration__Repository__SQLite__Url=/data/db/IoT-TrafficLights.db
       - WebConfiguration__Api__Url=http://iot-trafficlights-api:8080
     volumes:
       - ${DB_DIR}:/data/db
     ports:
       - 8015:8080
+    healthcheck:
+      test: curl --fail http://localhost:8080/healthz || exit 1
+      interval: 30s
+      timeout: 30s
+      retries: 10
     tty: true
     privileged: true
     networks:
       - iot-trafficlights
 
   console:
-    image: qbituniverse/iot-trafficlights-console:latest
+    depends_on:
+      web:
+        condition: service_healthy
     restart: always
+    image: qbituniverse/iot-trafficlights-console:latest
     container_name: iot-trafficlights-console
     environment:
       - TZ=Europe/Warsaw
@@ -54,7 +70,7 @@ services:
       - ConsoleConfiguration__LogLevel__Console=Information
       - ConsoleConfiguration__LogLevel__Database=Error
       - ConsoleConfiguration__Repository__Type=SQLite
-      - ConsoleConfiguration__Repository__SQLite__Url=/data/db/TrafficLights.db
+      - ConsoleConfiguration__Repository__SQLite__Url=/data/db/IoT-TrafficLights.db
       - ConsoleConfiguration__Modules__TrafficControl__Type=Mock
       - ConsoleConfiguration__Modules__TrafficSensor__Type=Mock
       - ConsoleConfiguration__Run=RunTrafficSensor
@@ -66,8 +82,11 @@ services:
       - iot-trafficlights
 
   sqlitebrowser:
-    image: lscr.io/linuxserver/sqlitebrowser:latest
+    depends_on:
+      web:
+        condition: service_healthy
     restart: always
+    image: lscr.io/linuxserver/sqlitebrowser:latest
     container_name: iot-trafficlights-sqlitebrowser
     security_opt:
       - seccomp:unconfined

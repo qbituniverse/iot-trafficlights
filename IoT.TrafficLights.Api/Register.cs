@@ -10,6 +10,7 @@ internal class Register
     public static void Services(ApiConfiguration configuration, IServiceCollection services)
     {
         services.AddControllers();
+        services.AddHealthChecks();
         services.AddSwaggerGen();
 
         switch (configuration.Repository!.Type)
