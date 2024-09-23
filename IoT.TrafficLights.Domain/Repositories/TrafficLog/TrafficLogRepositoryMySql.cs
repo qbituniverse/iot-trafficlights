@@ -18,12 +18,12 @@ public class TrafficLogRepositoryMySql : ITrafficLogRepository
 
         using var connection = GetConnection();
         connection.Open();
-        using var command = new MySqlCommand("SHOW TABLES FROM IoT-TrafficLights LIKE 'TrafficLogs';", connection);
+        using var command = new MySqlCommand("SHOW TABLES FROM IotTrafficLights LIKE 'TrafficLogs';", connection);
         var reader = command.ExecuteScalar();
 
         if (reader != null) return;
 
-        const string trafficLog = "CREATE TABLE IoT-TrafficLights.TrafficLogs (" +
+        const string trafficLog = "CREATE TABLE IotTrafficLights.TrafficLogs (" +
                                   "Id INT NOT NULL AUTO_INCREMENT, " +
                                   "Mode VARCHAR(7) NOT NULL, " +
                                   "TimeStamp DATETIME NOT NULL, " +
@@ -39,7 +39,7 @@ public class TrafficLogRepositoryMySql : ITrafficLogRepository
 
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new MySqlCommand("SELECT * FROM IoT-TrafficLights.TrafficLogs " +
+        await using var command = new MySqlCommand("SELECT * FROM IotTrafficLights.TrafficLogs " +
                                                    $"WHERE Id = '{id}';", connection);
 
         await using var reader = await command.ExecuteReaderAsync();
@@ -63,7 +63,7 @@ public class TrafficLogRepositoryMySql : ITrafficLogRepository
 
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new MySqlCommand("SELECT * FROM IoT-TrafficLights.TrafficLogs " +
+        await using var command = new MySqlCommand("SELECT * FROM IotTrafficLights.TrafficLogs " +
                                                    $"WHERE TimeStamp >= '{fromDate.ToDatabaseFormat()}' " +
                                                    $"AND TimeStamp <= '{toDate.ToDatabaseFormat()}' " +
                                                    "ORDER BY TimeStamp DESC;", connection);
@@ -86,7 +86,7 @@ public class TrafficLogRepositoryMySql : ITrafficLogRepository
     {
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new MySqlCommand("SELECT * FROM IoT-TrafficLights.TrafficLogs " +
+        await using var command = new MySqlCommand("SELECT * FROM IotTrafficLights.TrafficLogs " +
                                                    "ORDER BY TimeStamp DESC;", connection);
 
         await using var reader = await command.ExecuteReaderAsync();
@@ -108,7 +108,7 @@ public class TrafficLogRepositoryMySql : ITrafficLogRepository
         var trafficLogMySql = trafficLog.MapToMySql();
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new MySqlCommand("INSERT INTO IoT-TrafficLights.TrafficLogs (Mode, TimeStamp) " +
+        await using var command = new MySqlCommand("INSERT INTO IotTrafficLights.TrafficLogs (Mode, TimeStamp) " +
                                                    $"VALUES ('{trafficLogMySql.Mode}', " +
                                                    $"'{trafficLogMySql.TimeStamp.ToDatabaseFormat()}');" +
                                                    "SELECT LAST_INSERT_ID();", connection);
@@ -126,7 +126,7 @@ public class TrafficLogRepositoryMySql : ITrafficLogRepository
         var trafficLogMySql = trafficLog.MapToMySql();
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new MySqlCommand("UPDATE IoT-TrafficLights.TrafficLogs " +
+        await using var command = new MySqlCommand("UPDATE IotTrafficLights.TrafficLogs " +
                                                    $"SET Mode = '{trafficLogMySql.Mode}', " +
                                                    $"TimeStamp = '{trafficLogMySql.TimeStamp.ToDatabaseFormat()}'" +
                                                    $"WHERE Id = {trafficLogMySql.Id};", connection);
@@ -143,7 +143,7 @@ public class TrafficLogRepositoryMySql : ITrafficLogRepository
 
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new MySqlCommand("DELETE FROM IoT-TrafficLights.TrafficLogs " +
+        await using var command = new MySqlCommand("DELETE FROM IotTrafficLights.TrafficLogs " +
                                                    $"WHERE Id = {id};", connection);
 
         var result = await command.ExecuteNonQueryAsync();
@@ -161,7 +161,7 @@ public class TrafficLogRepositoryMySql : ITrafficLogRepository
 
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new MySqlCommand("DELETE FROM IoT-TrafficLights.TrafficLogs " +
+        await using var command = new MySqlCommand("DELETE FROM IotTrafficLights.TrafficLogs " +
                                                    $"WHERE TimeStamp >= '{fromDate.ToDatabaseFormat()}' " +
                                                    $"AND TimeStamp <= '{toDate.ToDatabaseFormat()}' ", connection);
 
@@ -175,7 +175,7 @@ public class TrafficLogRepositoryMySql : ITrafficLogRepository
     {
         await using var connection = GetConnection();
         await connection.OpenAsync();
-        await using var command = new MySqlCommand("DELETE FROM IoT-TrafficLights.TrafficLogs;", connection);
+        await using var command = new MySqlCommand("DELETE FROM IotTrafficLights.TrafficLogs;", connection);
 
         var result = await command.ExecuteNonQueryAsync();
         await connection.CloseAsync();

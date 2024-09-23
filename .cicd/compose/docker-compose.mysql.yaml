@@ -6,7 +6,7 @@ services:
     environment:
       - TZ=Europe/Warsaw
       - MYSQL_ROOT_PASSWORD=${DB_PWD}
-      - MYSQL_DATABASE=IoT-TrafficLights
+      - MYSQL_DATABASE=IotTrafficLights
     volumes:
       - ${DB_DIR}:/var/lib/mysql
     ports:
@@ -35,7 +35,7 @@ services:
       - ApiConfiguration__LogLevel__Console=Information
       - ApiConfiguration__LogLevel__Database=Error
       - ApiConfiguration__Repository__Type=MySql
-      - ApiConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IoT-TrafficLights
+      - ApiConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IotTrafficLights
       - ApiConfiguration__Modules__TrafficControl__Type=Mock
     ports:
       - 8010:8080
@@ -63,7 +63,7 @@ services:
       - WebConfiguration__LogLevel__Console=Information
       - WebConfiguration__LogLevel__Database=Error
       - WebConfiguration__Repository__Type=MySql
-      - WebConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IoT-TrafficLights
+      - WebConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IotTrafficLights
       - WebConfiguration__Api__Url=http://iot-trafficlights-api:8080
     ports:
       - 8015:8080
@@ -91,7 +91,7 @@ services:
       - ConsoleConfiguration__LogLevel__Console=Information
       - ConsoleConfiguration__LogLevel__Database=Error
       - ConsoleConfiguration__Repository__Type=MySql
-      - ConsoleConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IoT-TrafficLights
+      - ConsoleConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IotTrafficLights
       - ConsoleConfiguration__Modules__TrafficControl__Type=Mock
       - ConsoleConfiguration__Modules__TrafficSensor__Type=Mock
       - ConsoleConfiguration__Run=RunTrafficSensor
