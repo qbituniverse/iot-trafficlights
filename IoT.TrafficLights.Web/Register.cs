@@ -39,5 +39,7 @@ internal class Register
         services.AddSingleton<IAdminService, AdminService>();
         services.AddSingleton<ITrafficControlService, TrafficControlService>();
         services.AddSingleton<ITrafficLogService, TrafficLogService>();
+
+        services.AddSingleton(configuration);
     }
 }
