@@ -29,8 +29,8 @@ export DB_PWD=""
 export DB_DIR=""
 
 sudo docker compose version
-sudo docker compose -f .cicd/compose/docker-compose.sqlite.yaml up -d
-sudo docker compose -f .cicd/compose/docker-compose.sqlite.yaml down
+sudo docker compose -f docker-compose.sqlite.yaml up -d
+sudo docker compose -f docker-compose.sqlite.yaml down
 
 # Clean-up
 sudo rm -rf /home/iot/code/TrafficLights
