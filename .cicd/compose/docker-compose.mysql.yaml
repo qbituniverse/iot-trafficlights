@@ -13,7 +13,7 @@ services:
       - 3319:3306
     healthcheck:
       test: mysqladmin ping -h localhost
-      interval: 30s
+      interval: 120s
       timeout: 30s
       retries: 10
     tty: true

@@ -36,10 +36,10 @@ docker run --name iot-trafficlights-mysql --network iot-trafficlights -e TZ=Euro
 docker logs iot-trafficlights-mysql
 
 # Queries
-SELECT * FROM TrafficLights.TrafficLogs ORDER BY TimeStamp DESC;
-SELECT * FROM TrafficLights.ApiLogs ORDER BY TimeStamp DESC;
-SELECT * FROM TrafficLights.WebLogs ORDER BY TimeStamp DESC;
-SELECT * FROM TrafficLights.ConsoleLogs ORDER BY TimeStamp DESC;
+SELECT * FROM IotTrafficLights.TrafficLogs ORDER BY TimeStamp DESC;
+SELECT * FROM IotTrafficLights.ApiLogs ORDER BY TimeStamp DESC;
+SELECT * FROM IotTrafficLights.WebLogs ORDER BY TimeStamp DESC;
+SELECT * FROM IotTrafficLights.ConsoleLogs ORDER BY TimeStamp DESC;
 
 # Clean-up
 docker rm -v -f iot-trafficlights-mysql
