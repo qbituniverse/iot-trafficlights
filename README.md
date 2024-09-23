@@ -39,7 +39,7 @@ Backend database details, used across all projects in the IoT TrafficLights solu
 
 |Object|Name|Description|
 |-----|-----|-----|
-|**Database**|TrafficLights|Main database name for the IoT TrafficLights solution.|
+|**Database**|IotTrafficLights|Main database name for the IoT TrafficLights solution.|
 |**Tables**|ApiLogs|Store the API execution logs.|
 ||WebLogs|Store the Web App execution logs.|
 ||ConsoleLogs|Store the Console execution logs.|

@@ -11,7 +11,7 @@ services:
       - 27019:27017
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017 --quiet
-      interval: 30s
+      interval: 120s
       timeout: 30s
       retries: 10
     tty: true
