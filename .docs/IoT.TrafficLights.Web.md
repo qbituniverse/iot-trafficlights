@@ -9,18 +9,14 @@ Web app project used to control the traffic lights module from a Razor UI HTTP w
 |**TrafficControl**|/traffic-control|Send traffic control signals to control the traffic lights.|
 |**TrafficLog**|/traffic-log-list|View traffic log execution history.|
 ||/traffic-log-details/{id}<br />{id}: string|View traffic log details by Id.|
-|**DatabaseBrowser**|/database-browser|Access database browser client.|
 
 ## Ports
 
-|Host|Environment|Port|
-|-----|-----|-----|
-|**Localhost**|Development|5015|
-||Test|5016|
-||Production|5017|
-|**Docker**|Development|8015|
-||Test|8016|
-||Production|8017|
+|Environment|Port|
+|-----|-----|
+|Development|8014|
+|Test|8015|
+|Production|8016|
 
 ## Configuration
 
@@ -36,7 +32,7 @@ Web app project used to control the traffic lights module from a Razor UI HTTP w
 |Repository.Type|Mock|Defaults to *empty string ("")*. Hard-coded in-memory data, no persistent storage.|
 ||SQLite|SQLite database backend.<br>_NOTE: Works on AMD and ARM architectures_.|
 ||MySql|MySql database backend.<br>_NOTE: Works on AMD and ARM architectures_.|
-||MongoDb|MongoDb database backend.<br>_NOTE: Not available for ARM architecture_.|
+||MongoDb|MongoDb database backend.<br>_NOTE: Works on AMD and ARM architectures (Pi 5 or higher)_.|
 |Repository.SQLite||SQLite details.|
 |Repository.SQLite.Url|Connection string|Connection details to SQLite.|
 |Repository.MySql||MySql details.|
@@ -91,14 +87,14 @@ Web app project used to control the traffic lights module from a Razor UI HTTP w
         "Url": "PATH_TO_DATABASE\\DATABASE_NAME"
       },
       "MySql": {
-        "Url": "Server=127.0.0.1;Port=3319;User ID=root;Password=YOUR_PASSWORD;Database=DATABASE_NAME"
+        "Url": "Server=127.0.0.1;Port=3317;User ID=root;Password=YOUR_PASSWORD;Database=DATABASE_NAME"
       },
       "MongoDb": {
-        "Url": "mongodb://localhost:27019"
+        "Url": "mongodb://localhost:27017"
       }
     },
     "Api": {
-      "Url": "http://localhost:5010"
+      "Url": "http://localhost:8011"
     }
   }
 }

@@ -2,15 +2,15 @@ services:
   db:
     restart: always
     image: mysql:latest
-    container_name: iot-trafficlights-mysql
+    container_name: ${COMPOSE_PROJECT_NAME}_iot-trafficlights-mysql
     environment:
       - TZ=Europe/Warsaw
       - MYSQL_ROOT_PASSWORD=${DB_PWD}
       - MYSQL_DATABASE=IotTrafficLights
     volumes:
-      - ${DB_DIR}:/var/lib/mysql
+      - ${DB_DIR_MYSQL}:/var/lib/mysql
     ports:
-      - 3319:3306
+      - ${DB_PORT}:3306
     healthcheck:
       test: mysqladmin ping -h localhost
       interval: 120s
@@ -27,18 +27,18 @@ services:
         condition: service_healthy
     restart: always
     image: qbituniverse/iot-trafficlights-api:latest
-    container_name: iot-trafficlights-api
+    container_name: ${COMPOSE_PROJECT_NAME}_iot-trafficlights-api
     environment:
       - TZ=Europe/Warsaw
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ApiConfiguration__Environment=Development
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
+      - ApiConfiguration__Environment=${ENVIRONMENT}
       - ApiConfiguration__LogLevel__Console=Information
       - ApiConfiguration__LogLevel__Database=Error
       - ApiConfiguration__Repository__Type=MySql
-      - ApiConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IotTrafficLights
-      - ApiConfiguration__Modules__TrafficControl__Type=Mock
+      - ApiConfiguration__Repository__MySql__Url=Server=${COMPOSE_PROJECT_NAME}_iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IotTrafficLights
+      - ApiConfiguration__Modules__TrafficControl__Type=${GPIO}
     ports:
-      - 8010:8080
+      - ${API_PORT}:8080
     healthcheck:
       test: curl --fail http://localhost:8080/healthz || exit 1
       interval: 30s
@@ -55,18 +55,18 @@ services:
         condition: service_healthy
     restart: always
     image: qbituniverse/iot-trafficlights-web:latest
-    container_name: iot-trafficlights-web
+    container_name: ${COMPOSE_PROJECT_NAME}_iot-trafficlights-web
     environment:
       - TZ=Europe/Warsaw
-      - ASPNETCORE_ENVIRONMENT=Development
-      - WebConfiguration__Environment=Development
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
+      - WebConfiguration__Environment=${ENVIRONMENT}
       - WebConfiguration__LogLevel__Console=Information
       - WebConfiguration__LogLevel__Database=Error
       - WebConfiguration__Repository__Type=MySql
-      - WebConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IotTrafficLights
-      - WebConfiguration__Api__Url=http://iot-trafficlights-api:8080
+      - WebConfiguration__Repository__MySql__Url=Server=${COMPOSE_PROJECT_NAME}_iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IotTrafficLights
+      - WebConfiguration__Api__Url=http://${COMPOSE_PROJECT_NAME}_iot-trafficlights-api:8080
     ports:
-      - 8015:8080
+      - ${WEB_PORT}:8080
     healthcheck:
       test: curl --fail http://localhost:8080/healthz || exit 1
       interval: 30s
@@ -83,18 +83,18 @@ services:
         condition: service_healthy
     restart: always
     image: qbituniverse/iot-trafficlights-console:latest
-    container_name: iot-trafficlights-console
+    container_name: ${COMPOSE_PROJECT_NAME}_iot-trafficlights-console
     environment:
       - TZ=Europe/Warsaw
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConsoleConfiguration__Environment=Development
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
+      - ConsoleConfiguration__Environment=${ENVIRONMENT}
       - ConsoleConfiguration__LogLevel__Console=Information
       - ConsoleConfiguration__LogLevel__Database=Error
       - ConsoleConfiguration__Repository__Type=MySql
-      - ConsoleConfiguration__Repository__MySql__Url=Server=iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IotTrafficLights
-      - ConsoleConfiguration__Modules__TrafficControl__Type=Mock
-      - ConsoleConfiguration__Modules__TrafficSensor__Type=Mock
-      - ConsoleConfiguration__Run=RunTrafficSensor
+      - ConsoleConfiguration__Repository__MySql__Url=Server=${COMPOSE_PROJECT_NAME}_iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IotTrafficLights
+      - ConsoleConfiguration__Modules__TrafficControl__Type=${GPIO}
+      - ConsoleConfiguration__Modules__TrafficSensor__Type=${GPIO}
+      - ConsoleConfiguration__Run=${RUN}
     tty: true
     privileged: true
     networks:

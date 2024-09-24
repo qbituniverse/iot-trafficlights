@@ -5,6 +5,7 @@
 
 <PageTitle>IoT Traffic Lights</PageTitle>
 
+@inject IJSRuntime JsRuntime
 @inject IAdminService AdminService
 @inject WebConfiguration WebConfiguration
 
@@ -25,6 +26,11 @@
     <pre>@JsonSerializer.Serialize(_apiConfiguration, new JsonSerializerOptions { WriteIndented = true })</pre>
 </div>
 
+<div class="my-3">
+    <h4>Database Browser</h4>
+    <button class="btn btn-primary w-100" @onclick="LaunchDatabaseBrowser">Launch Database Browser</button>
+</div>
+
 @code {
     private string? _apiPing;
 
@@ -36,5 +42,46 @@
         _apiPing = apiPing ? "Connected" : "Not Connected!!!";
         var apiConfiguration = await AdminService.Config();
         _apiConfiguration = JsonSerializer.Deserialize<object>(apiConfiguration!, new JsonSerializerOptions { WriteIndented = true });
+    }
+
+    protected async void LaunchDatabaseBrowser(EventArgs args)
+    {
+        var url = string.Empty;
+        var port = 0;
+        switch (WebConfiguration.Repository!.Type)
+        {
+            case "SQLite":
+                port = WebConfiguration.Environment switch
+                {
+                    "Development" => 3017,
+                    "Test" => 3018,
+                    "Production" => 3019,
+                    _ => port
+                    };
+                url = await JsRuntime.InvokeAsync<string>("prompt", "SQLite Browser URL:", $"http://localhost:{port}");
+                break;
+
+            case "MySql":
+                await JsRuntime.InvokeAsync<string>("alert", "Use MySql Workbench Client");
+                break;
+
+            case "MongoDb":
+                port = WebConfiguration.Environment switch
+                {
+                    "Development" => 8017,
+                    "Test" => 8018,
+                    "Production" => 8019,
+                    _ => port
+                    };
+                url = await JsRuntime.InvokeAsync<string>("prompt", "MongoDb Browser URL:", $"http://localhost:{port}");
+                break;
+
+            default:
+                await JsRuntime.InvokeAsync<string>("alert", "No database detected!!!");
+                break;
+        }
+
+        if (!string.IsNullOrEmpty(url))
+            await JsRuntime.InvokeVoidAsync("open", url, "_blank");
     }
 }

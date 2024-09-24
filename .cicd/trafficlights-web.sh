@@ -28,6 +28,6 @@ docker buildx rm -f iot-trafficlights-buildx
 
 ### Run Single Conrainer ###
 sudo docker network create iot-trafficlights
-sudo docker run -it --rm --name iot-trafficlights-web --network iot-trafficlights -e TZ=Europe/Warsaw -p 8020:8080 qbituniverse/iot-trafficlights-web:latest
+sudo docker run -it --rm --name iot-trafficlights-web --network iot-trafficlights -e TZ=Europe/Warsaw -p 8014:8080 qbituniverse/iot-trafficlights-web:latest
 sudo docker rm -fv iot-trafficlights-web
 sudo docker rmi -f qbituniverse/iot-trafficlights-web:latest
