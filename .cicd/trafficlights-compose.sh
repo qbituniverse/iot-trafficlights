@@ -1,10 +1,10 @@
 ### Amd 64 ###
-$env:DB_PWD=""
-$env:DB_DIR=""
+$database = "sqlite"
+$environment = "development"
 
 docker compose version
-docker compose -f .cicd/compose/docker-compose.sqlite.yaml up -d
-docker compose -f .cicd/compose/docker-compose.sqlite.yaml down
+docker compose -f .cicd/compose/docker-compose.$database.yaml --env-file .cicd/compose/vars-$environment.env up -d
+docker compose -f .cicd/compose/docker-compose.$database.yaml --env-file .cicd/compose/vars-$environment.env down
 
 
 
@@ -25,12 +25,12 @@ sudo chmod 777 /home/iot/data/TrafficLights/MongoDb
 
 cd /home/iot/code/TrafficLights
 
-export DB_PWD=""
-export DB_DIR=""
+$database = "sqlite"
+$environment = "test"
 
 sudo docker compose version
-sudo docker compose -f docker-compose.sqlite.yaml up -d
-sudo docker compose -f docker-compose.sqlite.yaml down
+sudo docker compose -f docker-compose.$database.yaml --env-file vars-$environment.env up -d
+sudo docker compose -f docker-compose.$database.yaml --env-file vars-$environment.env down
 
 # Clean-up
 sudo rm -rf /home/iot/code/TrafficLights

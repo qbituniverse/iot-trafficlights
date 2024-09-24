@@ -25,14 +25,11 @@ For a complete OpenAPI specification please refer to [IoT.TrafficLights.Api.Spec
 
 ## Ports
 
-|Host|Environment|Port|
-|-----|-----|-----|
-|**Localhost**|Development|5010|
-||Test|5011|
-||Production|5012|
-|**Docker**|Development|8010|
-||Test|8011|
-||Production|8012|
+|Environment|Port|
+|-----|-----|
+|Development|8011|
+|Test|8012|
+|Production|8013|
 
 ## Configuration
 
@@ -48,7 +45,7 @@ For a complete OpenAPI specification please refer to [IoT.TrafficLights.Api.Spec
 |Repository.Type|Mock|Defaults to *empty string ("")*. Hard-coded in-memory data, no persistent storage.|
 ||SQLite|SQLite database backend.<br>_NOTE: Works on AMD and ARM architectures_.|
 ||MySql|MySql database backend.<br>_NOTE: Works on AMD and ARM architectures_.|
-||MongoDb|MongoDb database backend.<br>_NOTE: Not available for ARM architecture_.|
+||MongoDb|MongoDb database backend.<br>_NOTE: Works on AMD and ARM architectures (Pi 5 or higher)_.|
 |Repository.SQLite||SQLite details.|
 |Repository.SQLite.Url|Connection string|Connection details to SQLite.|
 |Repository.MySql||MySql details.|
@@ -107,10 +104,10 @@ For a complete OpenAPI specification please refer to [IoT.TrafficLights.Api.Spec
         "Url": "PATH_TO_DATABASE\\DATABASE_NAME"
       },
       "MySql": {
-        "Url": "Server=127.0.0.1;Port=3319;User ID=root;Password=YOUR_PASSWORD;Database=DATABASE_NAME"
+        "Url": "Server=127.0.0.1;Port=3317;User ID=root;Password=YOUR_PASSWORD;Database=DATABASE_NAME"
       },
       "MongoDb": {
-        "Url": "mongodb://localhost:27019"
+        "Url": "mongodb://localhost:27017"
       }
     },
     "Modules": {

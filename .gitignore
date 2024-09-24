@@ -375,3 +375,6 @@ FodyWeavers.xsd
 
 # Config
 .config/
+
+# Env files
+**/vars-*.env

@@ -6,7 +6,7 @@ docker network create iot-trafficlights
 $DB_DIR=""
 export DB_DIR=""
 
-docker run -d --name iot-trafficlights-sqlitebrowser --security-opt seccomp=unconfined -e PUID=1000 -e PGID=1000 -e TZ=Europe/Warsaw -p 3019:3000 -v ${DB_DIR}:/data/db --restart unless-stopped lscr.io/linuxserver/sqlitebrowser:latest
+docker run -d --name iot-trafficlights-sqlitebrowser --security-opt seccomp=unconfined -e PUID=1000 -e PGID=1000 -e TZ=Europe/Warsaw -p 3017:3000 -v ${DB_DIR}:/data/db --restart unless-stopped lscr.io/linuxserver/sqlitebrowser:latest
 docker logs iot-trafficlights-sqlitebrowser
 
 # Browse
@@ -32,7 +32,7 @@ docker network create iot-trafficlights
 $DB_PWD=""
 $DB_DIR=""
 
-docker run --name iot-trafficlights-mysql --network iot-trafficlights -e TZ=Europe/Warsaw -e MYSQL_ROOT_PASSWORD=${DB_PWD} -e MYSQL_DATABASE=TrafficLights -v ${DB_DIR}:/var/lib/mysql -d -p 3319:3306 mysql:latest
+docker run --name iot-trafficlights-mysql --network iot-trafficlights -e TZ=Europe/Warsaw -e MYSQL_ROOT_PASSWORD=${DB_PWD} -e MYSQL_DATABASE=TrafficLights -v ${DB_DIR}:/var/lib/mysql -d -p 3317:3306 mysql:latest
 docker logs iot-trafficlights-mysql
 
 # Queries
@@ -54,7 +54,7 @@ docker network create iot-trafficlights
 # Database
 $DB_DIR=""
 
-docker run --name iot-trafficlights-mongodb --network iot-trafficlights -e TZ=Europe/Warsaw -v ${DB_DIR}:/data/db -d -p 27019:27017 mongo:latest
+docker run --name iot-trafficlights-mongodb --network iot-trafficlights -e TZ=Europe/Warsaw -v ${DB_DIR}:/data/db -d -p 27017:27017 mongo:latest
 docker logs iot-trafficlights-mongodb
 
 # Clean-up
@@ -64,11 +64,11 @@ docker network remove mongo-iot-trafficlights
 
 
 ### Mongo Express ###
-docker run --name iot-trafficlights-mongoexpress --network compose_iot-trafficlights -e ME_CONFIG_MONGODB_SERVER=iot-trafficlights-mongodb -e TZ=Europe/Warsaw -d -p 8019:8081 mongo-express:latest
+docker run --name iot-trafficlights-mongoexpress --network compose_iot-trafficlights -e ME_CONFIG_MONGODB_SERVER=iot-trafficlights-mongodb -e TZ=Europe/Warsaw -d -p 8017:8081 mongo-express:latest
 docker logs iot-trafficlights-mongoexpress
 
 # admin:pass
-http://localhost:8181
+http://localhost:8017
 
 # Clean-up
 docker rm -v -f iot-trafficlights-mongoexpress

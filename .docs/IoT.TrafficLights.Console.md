@@ -16,7 +16,7 @@ Console app used to run traffic lights module or traffic sensor module.
 |Repository.Type|Mock|Defaults to *empty string ("")*. Hard-coded in-memory data, no persistent storage.|
 ||SQLite|SQLite database backend.<br>_NOTE: Works on AMD and ARM architectures_.|
 ||MySql|MySql database backend.<br>_NOTE: Works on AMD and ARM architectures_.|
-||MongoDb|MongoDb database backend.<br>_NOTE: Not available for ARM architecture_.|
+||MongoDb|MongoDb database backend.<br>_NOTE: Works on AMD and ARM architectures (Pi 5 or higher)_.|
 |Repository.SQLite||SQLite details.|
 |Repository.SQLite.Url|Connection string|Connection details to SQLite.|
 |Repository.MySql||MySql details.|
@@ -86,10 +86,10 @@ Console app used to run traffic lights module or traffic sensor module.
         "Url": "PATH_TO_DATABASE\\DATABASE_NAME"
       },
       "MySql": {
-        "Url": "Server=127.0.0.1;Port=3319;User ID=root;Password=YOUR_PASSWORD;Database=DATABASE_NAME"
+        "Url": "Server=127.0.0.1;Port=3317;User ID=root;Password=YOUR_PASSWORD;Database=DATABASE_NAME"
       },
       "MongoDb": {
-        "Url": "mongodb://localhost:27019"
+        "Url": "mongodb://localhost:27017"
       }
     },
     "Modules": {
