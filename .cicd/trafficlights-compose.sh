@@ -24,7 +24,7 @@ sudo chmod 777 /home/iot/data/TrafficLights/MongoDb
 
 cd /home/iot/code/TrafficLights
 
-$environment = "test"
+environment=test
 
 sudo docker compose version
 sudo docker compose -f docker-compose.yaml --env-file vars-$environment.env up -d
