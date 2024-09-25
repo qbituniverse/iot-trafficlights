@@ -46,42 +46,31 @@
 
     protected async void LaunchDatabaseBrowser(EventArgs args)
     {
-        var url = string.Empty;
-        var port = 0;
         switch (WebConfiguration.Repository!.Type)
         {
             case "SQLite":
-                port = WebConfiguration.Environment switch
+                var port = WebConfiguration.Environment switch
                 {
                     "Development" => 3017,
                     "Test" => 3018,
                     "Production" => 3019,
-                    _ => port
-                    };
-                url = await JsRuntime.InvokeAsync<string>("prompt", "SQLite Browser URL:", $"http://localhost:{port}");
+                    _ => 0
+                };
+                var url = await JsRuntime.InvokeAsync<string>("prompt", "SQLite Browser URL:", $"http://localhost:{port}");
+                await JsRuntime.InvokeVoidAsync("open", url, "_blank");
                 break;
 
             case "MySql":
-                await JsRuntime.InvokeAsync<string>("alert", "Use MySql Workbench Client");
+                await JsRuntime.InvokeAsync<string>("alert", $"Use MySql Workbench Client: {WebConfiguration.Repository.MySql!.Url}");
                 break;
 
             case "MongoDb":
-                port = WebConfiguration.Environment switch
-                {
-                    "Development" => 8017,
-                    "Test" => 8018,
-                    "Production" => 8019,
-                    _ => port
-                    };
-                url = await JsRuntime.InvokeAsync<string>("prompt", "MongoDb Browser URL:", $"http://localhost:{port}");
+                await JsRuntime.InvokeAsync<string>("alert", $"Use MongoDb Compass Client: {WebConfiguration.Repository.MongoDb!.Url}");
                 break;
 
             default:
                 await JsRuntime.InvokeAsync<string>("alert", "No database detected!!!");
                 break;
         }
-
-        if (!string.IsNullOrEmpty(url))
-            await JsRuntime.InvokeVoidAsync("open", url, "_blank");
     }
 }

@@ -1,5 +1,28 @@
 services:
-  db:
+  db-mysql:
+    profiles: ["MySql"]
+    restart: always
+    image: mysql:latest
+    container_name: ${COMPOSE_PROJECT_NAME}_iot-trafficlights-mysql
+    environment:
+      - TZ=Europe/Warsaw
+      - MYSQL_ROOT_PASSWORD=${DB_PWD}
+      - MYSQL_DATABASE=IotTrafficLights
+    volumes:
+      - ${DB_DIR_MYSQL}:/var/lib/mysql
+    ports:
+      - ${DB_PORT_MYSQL}:3306
+    healthcheck:
+      test: mysqladmin ping -h localhost
+      interval: 120s
+      timeout: 30s
+      retries: 10
+    tty: true
+    privileged: true
+    networks:
+      - iot-trafficlights
+  
+  db-mongodb:
     restart: always
     image: mongo:latest
     container_name: ${COMPOSE_PROJECT_NAME}_iot-trafficlights-mongodb
@@ -8,7 +31,7 @@ services:
     volumes:
       - ${DB_DIR_MONGODB}:/data/db
     ports:
-      - ${DB_PORT}:27017
+      - ${DB_PORT_MONGODB}:27017
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017 --quiet
       interval: 120s
@@ -18,11 +41,16 @@ services:
     privileged: true
     networks:
       - iot-trafficlights
-  
+
   api:
+    profiles: ["Mock", "SQLite", "MySql", "MongoDb"]
     depends_on:
-      db:
+      db-mongodb:
         condition: service_healthy
+        required: false
+      db-mysql:
+        condition: service_healthy
+        required: false
     restart: always
     image: qbituniverse/iot-trafficlights-api:latest
     container_name: ${COMPOSE_PROJECT_NAME}_iot-trafficlights-api
@@ -30,11 +58,15 @@ services:
       - TZ=Europe/Warsaw
       - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
       - ApiConfiguration__Environment=${ENVIRONMENT}
-      - ApiConfiguration__LogLevel__Console=Information
-      - ApiConfiguration__LogLevel__Database=Error
-      - ApiConfiguration__Repository__Type=MongoDb
+      - ApiConfiguration__LogLevel__Console=${LOGLEVEL_CONSOLE}
+      - ApiConfiguration__LogLevel__Database=${LOGLEVEL_DATABASE}
+      - ApiConfiguration__Repository__Type=${COMPOSE_PROFILES}
+      - ApiConfiguration__Repository__SQLite__Url=/data/db/IotTrafficLights.db
+      - ApiConfiguration__Repository__MySql__Url=Server=${COMPOSE_PROJECT_NAME}_iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IotTrafficLights
       - ApiConfiguration__Repository__MongoDb__Url=mongodb://${COMPOSE_PROJECT_NAME}_iot-trafficlights-mongodb:27017
       - ApiConfiguration__Modules__TrafficControl__Type=${GPIO}
+    volumes:
+      - ${DB_DIR_SQLITE}:/data/db
     ports:
       - ${API_PORT}:8080
     healthcheck:
@@ -48,9 +80,11 @@ services:
       - iot-trafficlights
 
   web:
+    profiles: ["Mock", "SQLite", "MySql", "MongoDb"]
     depends_on:
       api:
         condition: service_healthy
+        required: true
     restart: always
     image: qbituniverse/iot-trafficlights-web:latest
     container_name: ${COMPOSE_PROJECT_NAME}_iot-trafficlights-web
@@ -58,11 +92,15 @@ services:
       - TZ=Europe/Warsaw
       - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
       - WebConfiguration__Environment=${ENVIRONMENT}
-      - WebConfiguration__LogLevel__Console=Information
-      - WebConfiguration__LogLevel__Database=Error
-      - WebConfiguration__Repository__Type=MongoDb
+      - WebConfiguration__LogLevel__Console=${LOGLEVEL_CONSOLE}
+      - WebConfiguration__LogLevel__Database=${LOGLEVEL_DATABASE}
+      - WebConfiguration__Repository__Type=${COMPOSE_PROFILES}
+      - WebConfiguration__Repository__SQLite__Url=/data/db/IotTrafficLights.db
+      - WebConfiguration__Repository__MySql__Url=Server=${COMPOSE_PROJECT_NAME}_iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IotTrafficLights
       - WebConfiguration__Repository__MongoDb__Url=mongodb://${COMPOSE_PROJECT_NAME}_iot-trafficlights-mongodb:27017
       - WebConfiguration__Api__Url=http://${COMPOSE_PROJECT_NAME}_iot-trafficlights-api:8080
+    volumes:
+      - ${DB_DIR_SQLITE}:/data/db
     ports:
       - ${WEB_PORT}:8080
     healthcheck:
@@ -76,9 +114,11 @@ services:
       - iot-trafficlights
 
   console:
+    profiles: ["Mock", "SQLite", "MySql", "MongoDb"]
     depends_on:
       web:
         condition: service_healthy
+        required: true
     restart: always
     image: qbituniverse/iot-trafficlights-console:latest
     container_name: ${COMPOSE_PROJECT_NAME}_iot-trafficlights-console
@@ -86,30 +126,41 @@ services:
       - TZ=Europe/Warsaw
       - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
       - ConsoleConfiguration__Environment=${ENVIRONMENT}
-      - ConsoleConfiguration__LogLevel__Console=Information
-      - ConsoleConfiguration__LogLevel__Database=Error
-      - ConsoleConfiguration__Repository__Type=MongoDb
+      - ConsoleConfiguration__LogLevel__Console=${LOGLEVEL_CONSOLE}
+      - ConsoleConfiguration__LogLevel__Database=${LOGLEVEL_DATABASE}
+      - ConsoleConfiguration__Repository__Type=${COMPOSE_PROFILES}
+      - ConsoleConfiguration__Repository__SQLite__Url=/data/db/IotTrafficLights.db
+      - ConsoleConfiguration__Repository__MySql__Url=Server=${COMPOSE_PROJECT_NAME}_iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IotTrafficLights
       - ConsoleConfiguration__Repository__MongoDb__Url=mongodb://${COMPOSE_PROJECT_NAME}_iot-trafficlights-mongodb:27017
       - ConsoleConfiguration__Modules__TrafficControl__Type=${GPIO}
       - ConsoleConfiguration__Modules__TrafficSensor__Type=${GPIO}
       - ConsoleConfiguration__Run=${RUN}
+    volumes:
+      - ${DB_DIR_SQLITE}:/data/db
     tty: true
     privileged: true
     networks:
       - iot-trafficlights
 
-  mongoexpress:
+  sqlitebrowser:
+    profiles: ["SQLite"]
     depends_on:
       web:
         condition: service_healthy
+        required: true
     restart: always
-    image: mongo-express:latest
-    container_name: ${COMPOSE_PROJECT_NAME}_iot-trafficlights-mongoexpress
+    image: lscr.io/linuxserver/sqlitebrowser:latest
+    container_name: ${COMPOSE_PROJECT_NAME}_iot-trafficlights-sqlitebrowser
+    security_opt:
+      - seccomp:unconfined
     environment:
       - TZ=Europe/Warsaw
-      - ME_CONFIG_MONGODB_SERVER=${COMPOSE_PROJECT_NAME}_iot-trafficlights-mongodb
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - ${DB_DIR_SQLITE}:/data/db
     ports:
-      - ${DB_BROWSER_PORT}:8081
+      - ${DB_PORT_SQLITE}:3000
     tty: true
     privileged: true
     networks:
