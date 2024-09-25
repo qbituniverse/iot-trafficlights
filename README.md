@@ -38,7 +38,7 @@ The [vars.env](/.cicd/compose/vars.env) file provides all the environment specif
 |Key|Values|Description|
 |-----|-----|-----|
 |ENVIRONMENT|Development, Test, Production|Defines the release environment.|
-|COMPOSE_PROJECT_NAME|dev, test, prod|This is used to prefix and set environmental boundaries for the application components. It allows to run Dev, Test and Prod simultaneously on the same Docker instance at the same time and not clash with each other.|
+|COMPOSE_PROJECT_NAME|dev-iot-trafficlights, test-iot-trafficlights, prod-iot-trafficlights|This is used to prefix resources and set environmental boundaries for the application components. It allows to run Dev, Test and Prod simultaneously on the same Docker instance at the same time and not clash with each other.|
 |COMPOSE_PROFILES|Mock, SQLite, MySql, MongoDb|Defines which application components are created and used as backend data storage, i.e. SQLite, or MySql or MongoDb database or Mock in-memory only hard-coded data samples.|
 |DB_DIR_SQLITE|C:\Path\SQLite or /home/path/sqlite|SQLite database folder location where the database artifacts are stored.|
 |DB_PORT_SQLITE|30xx|Port number to access SQLite database.|

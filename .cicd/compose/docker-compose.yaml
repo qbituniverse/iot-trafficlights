@@ -3,7 +3,7 @@ services:
     profiles: ["MySql"]
     restart: always
     image: mysql:latest
-    container_name: ${COMPOSE_PROJECT_NAME}_iot-trafficlights-mysql
+    container_name: ${COMPOSE_PROJECT_NAME}-mysql
     environment:
       - TZ=Europe/Warsaw
       - MYSQL_ROOT_PASSWORD=${DB_PWD}
@@ -23,9 +23,10 @@ services:
       - iot-trafficlights
   
   db-mongodb:
+    profiles: ["MongoDb"]
     restart: always
     image: mongo:latest
-    container_name: ${COMPOSE_PROJECT_NAME}_iot-trafficlights-mongodb
+    container_name: ${COMPOSE_PROJECT_NAME}-mongodb
     environment:
       - TZ=Europe/Warsaw
     volumes:
@@ -53,7 +54,7 @@ services:
         required: false
     restart: always
     image: qbituniverse/iot-trafficlights-api:latest
-    container_name: ${COMPOSE_PROJECT_NAME}_iot-trafficlights-api
+    container_name: ${COMPOSE_PROJECT_NAME}-api
     environment:
       - TZ=Europe/Warsaw
       - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
@@ -62,8 +63,8 @@ services:
       - ApiConfiguration__LogLevel__Database=${LOGLEVEL_DATABASE}
       - ApiConfiguration__Repository__Type=${COMPOSE_PROFILES}
       - ApiConfiguration__Repository__SQLite__Url=/data/db/IotTrafficLights.db
-      - ApiConfiguration__Repository__MySql__Url=Server=${COMPOSE_PROJECT_NAME}_iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IotTrafficLights
-      - ApiConfiguration__Repository__MongoDb__Url=mongodb://${COMPOSE_PROJECT_NAME}_iot-trafficlights-mongodb:27017
+      - ApiConfiguration__Repository__MySql__Url=Server=${COMPOSE_PROJECT_NAME}-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IotTrafficLights
+      - ApiConfiguration__Repository__MongoDb__Url=mongodb://${COMPOSE_PROJECT_NAME}-mongodb:27017
       - ApiConfiguration__Modules__TrafficControl__Type=${GPIO}
     volumes:
       - ${DB_DIR_SQLITE}:/data/db
@@ -87,7 +88,7 @@ services:
         required: true
     restart: always
     image: qbituniverse/iot-trafficlights-web:latest
-    container_name: ${COMPOSE_PROJECT_NAME}_iot-trafficlights-web
+    container_name: ${COMPOSE_PROJECT_NAME}-web
     environment:
       - TZ=Europe/Warsaw
       - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
@@ -96,9 +97,9 @@ services:
       - WebConfiguration__LogLevel__Database=${LOGLEVEL_DATABASE}
       - WebConfiguration__Repository__Type=${COMPOSE_PROFILES}
       - WebConfiguration__Repository__SQLite__Url=/data/db/IotTrafficLights.db
-      - WebConfiguration__Repository__MySql__Url=Server=${COMPOSE_PROJECT_NAME}_iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IotTrafficLights
-      - WebConfiguration__Repository__MongoDb__Url=mongodb://${COMPOSE_PROJECT_NAME}_iot-trafficlights-mongodb:27017
-      - WebConfiguration__Api__Url=http://${COMPOSE_PROJECT_NAME}_iot-trafficlights-api:8080
+      - WebConfiguration__Repository__MySql__Url=Server=${COMPOSE_PROJECT_NAME}-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IotTrafficLights
+      - WebConfiguration__Repository__MongoDb__Url=mongodb://${COMPOSE_PROJECT_NAME}-mongodb:27017
+      - WebConfiguration__Api__Url=http://${COMPOSE_PROJECT_NAME}-api:8080
     volumes:
       - ${DB_DIR_SQLITE}:/data/db
     ports:
@@ -121,7 +122,7 @@ services:
         required: true
     restart: always
     image: qbituniverse/iot-trafficlights-console:latest
-    container_name: ${COMPOSE_PROJECT_NAME}_iot-trafficlights-console
+    container_name: ${COMPOSE_PROJECT_NAME}-console
     environment:
       - TZ=Europe/Warsaw
       - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
@@ -130,8 +131,8 @@ services:
       - ConsoleConfiguration__LogLevel__Database=${LOGLEVEL_DATABASE}
       - ConsoleConfiguration__Repository__Type=${COMPOSE_PROFILES}
       - ConsoleConfiguration__Repository__SQLite__Url=/data/db/IotTrafficLights.db
-      - ConsoleConfiguration__Repository__MySql__Url=Server=${COMPOSE_PROJECT_NAME}_iot-trafficlights-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IotTrafficLights
-      - ConsoleConfiguration__Repository__MongoDb__Url=mongodb://${COMPOSE_PROJECT_NAME}_iot-trafficlights-mongodb:27017
+      - ConsoleConfiguration__Repository__MySql__Url=Server=${COMPOSE_PROJECT_NAME}-mysql;Port=3306;User ID=root;Password=${DB_PWD};Database=IotTrafficLights
+      - ConsoleConfiguration__Repository__MongoDb__Url=mongodb://${COMPOSE_PROJECT_NAME}-mongodb:27017
       - ConsoleConfiguration__Modules__TrafficControl__Type=${GPIO}
       - ConsoleConfiguration__Modules__TrafficSensor__Type=${GPIO}
       - ConsoleConfiguration__Run=${RUN}
@@ -150,7 +151,7 @@ services:
         required: true
     restart: always
     image: lscr.io/linuxserver/sqlitebrowser:latest
-    container_name: ${COMPOSE_PROJECT_NAME}_iot-trafficlights-sqlitebrowser
+    container_name: ${COMPOSE_PROJECT_NAME}-sqlitebrowser
     security_opt:
       - seccomp:unconfined
     environment:
@@ -168,4 +169,5 @@ services:
 
 networks:
   iot-trafficlights:
+    name: ${COMPOSE_PROJECT_NAME}-bridge
     driver: bridge
