@@ -8,7 +8,19 @@ Traffic Lights solution to control traffic lights, setup on the Raspberry Pi GPI
 
 ## Raspberry Pi Breadboard Wiring
 
+Master source for the breadboard wiring can be found in the [IoT.TrafficLights.Breadboard.fzz](/.docs/IoT.TrafficLights.Breadboard.fzz) file. The file also allows to simulate the solution in the [Fritzing](https://fritzing.org/) application.
+
 ![IoT Traffic Lights Breadboard](/.docs/IoT.TrafficLights.Breadboard.png)
+
+## Hardware Specification
+
+|Component|Description|
+|-----|-----|
+|Raspberry Pi|Raspberry Pi 4 Model B Rev 1.5, 4GB RAM<br />Linux 6.1.0-rpi4-rpi-v8<br />Debian GNU/Linux 12 (bookworm)<br />arm64 architecture|
+|Breadboard and wiring|1x 830 hole breadboard and 10x standard wires|
+|LEDs|2x Green LEDs<br />2x Red LEDs<br />1x Amber LED|
+|Resistors|5x 330 Ohm|
+|Motion Sensor|1x HC-SR501 type motion sensor|
 
 ## Projects
 
@@ -41,14 +53,14 @@ The [vars.env](/.cicd/compose/vars.env) file provides all the environment specif
 |COMPOSE_PROJECT_NAME|dev-iot-trafficlights, test-iot-trafficlights, prod-iot-trafficlights|This is used to prefix resources and set environmental boundaries for the application components. It allows to run Dev, Test and Prod simultaneously on the same Docker instance at the same time and not clash with each other.|
 |COMPOSE_PROFILES|Mock, SQLite, MySql, MongoDb|Defines which application components are created and used as backend data storage, i.e. SQLite, or MySql or MongoDb database or Mock in-memory only hard-coded data samples.|
 |DB_DIR_SQLITE|C:\Path\SQLite or /home/path/sqlite|SQLite database folder location where the database artifacts are stored.|
-|DB_PORT_SQLITE|30xx|Port number to access SQLite database.|
+|DB_PORT_SQLITE|30xx, ex. 3017|Port number to access SQLite database.|
 |DB_DIR_MYSQL|C:\Path\MySql or /home/path/mysql|MySql database folder location where the database artifacts are stored.|
-|DB_PORT_MYSQL|33xx|Port number to access MySql database.|
+|DB_PORT_MYSQL|33xx, ex. 3317|Port number to access MySql database.|
 |DB_DIR_MONGODB|C:\Path\MongoDb or /home/path/mongodb|MongoDb database folder location where the database artifacts are stored.|
-|DB_PORT_MONGODB|270xx|Port number to access MongoDb database.|
+|DB_PORT_MONGODB|270xx, ex. 27017|Port number to access MongoDb database.|
 |DB_PWD|Password|Password to access the database, only applicable to MySql _root_ user.|
-|API_PORT|80xx|Port to access the Api.|
-|WEB_PORT|80xx|Port to access the Web app.|
+|API_PORT|80xx, ex. 8011|Port to access the Api.|
+|WEB_PORT|80xx, ex. 8014|Port to access the Web app.|
 |LOGLEVEL_CONSOLE|Verbose, Debug, Information, Warning, Error, Fatal|Log levels for the console output.|
 |LOGLEVEL_DATABASE|Verbose, Debug, Information, Warning, Error, Fatal|Log levels to log in the Database.|
 |GPIO|Mock, Pi|Define if the application is wired to Raspberry Pi or just in a Mock mode.|
